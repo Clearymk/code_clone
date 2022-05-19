@@ -26,7 +26,7 @@ def flatten(list_of_lists):
 
 
 if __name__ == "__main__":
-    path = "C:\\Users\\10952\\Desktop\\"
+    path = "D:\\jupyter\\"
     db = DataBase()
     jupyter_paths = []
     for root, dirs, files in os.walk(path):
@@ -37,9 +37,16 @@ if __name__ == "__main__":
         if len(files) > 0:
             jupyter_paths.extend(files)
 
+        if len(jupyter_paths) > 1000:
+            break
+
     for jupyter_path in jupyter_paths:
         for cell_code in extract_code_cells(jupyter_path):
-            trimmed_code = CodeTrimmer(cell_code).trim()
+            try:
+                trimmed_code = CodeTrimmer(cell_code).trim()
+            except Exception as e:
+                print(e)
+                continue
 
             if trimmed_code == "":
                 continue

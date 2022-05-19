@@ -6,7 +6,7 @@ import hashlib
 
 if __name__ == "__main__":
     db = DataBase()
-    path = "E:\\test"
+    path = "C:\\so_02"
     so_snippet_paths = []
 
     for root, dirs, files in os.walk(path):
@@ -16,14 +16,22 @@ if __name__ == "__main__":
         if len(files) > 0:
             so_snippet_paths.extend(files)
 
+        if len(so_snippet_paths) > 1000:
+            break
+
     for so_snippet_path in so_snippet_paths:
         code = ""
 
-        with open(so_snippet_path) as f:
+        with open(so_snippet_path, encoding="utf8") as f:
             for line in f.readlines():
                 code += line
 
-        trimmed_code = CodeTrimmer(code).trim()
+        try:
+            trimmed_code = CodeTrimmer(code).trim()
+        except Exception as e:
+            print(e)
+            continue
+
         if trimmed_code == "":
             continue
         hash_value = hashlib.md5(trimmed_code.encode("utf-8")).hexdigest()

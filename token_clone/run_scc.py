@@ -19,7 +19,8 @@ def gen_projects_list(project_path):
 
 # 清除之前运行是留下的历史数据
 def cleanup(clean_up_path):
-    cleanup_script = subprocess.Popen(os.path.join(clean_up_path, "cleanup.sh"), shell=True, stdin=subprocess.PIPE,
+    cleanup_script = subprocess.Popen("cd  " + clean_up_path + " && sh ./cleanup.sh", shell=True,
+                                      stdin=subprocess.PIPE,
                                       stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     print(cleanup_script.communicate())
     print(cleanup_script.returncode)
@@ -27,16 +28,14 @@ def cleanup(clean_up_path):
 
 # 生成token
 def gen_token(tokenizer_path):
-    tokenizer_script = subprocess.Popen("python " + os.path.join(tokenizer_path, "tokenizer.py"), shell=True,
+    tokenizer_script = subprocess.Popen("cd  " + tokenizer_path + " && python " + "tokenizer.py",
+                                        shell=True,
                                         stdin=subprocess.PIPE,
                                         stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     print(tokenizer_script.communicate())
-    print(tokenizer_script.returncode) \
-        # 将生成的token汇总到blocks.file
-    export_blocks = subprocess.Popen("cat "
-                                     + os.path.join(tokenizer_path, "files_tokens/*")
-                                     + " > "
-                                     + os.path.join(tokenizer_path, "blocks.file"),
+    print(tokenizer_script.returncode)
+    # 将生成的token汇总到blocks.file
+    export_blocks = subprocess.Popen("cd " + tokenizer_path + "&& cat files_tokens/* > blocks.file",
                                      shell=True,
                                      stdin=subprocess.PIPE,
                                      stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -54,15 +53,15 @@ def gen_query_file(blocks_path, size):
     for query_file in (tokens[i * k + min(i, m):(i + 1) * k + min(i + 1, m)] for i in range(size)):
         with open(os.path.join(blocks_path, "query_{}.file".format(count)), "w", encoding="utf8") as f:
             for token in query_file:
-                f.write(token + "\n")
+                f.write(token)
         count += 1
 
 
 # 复制query_file到clone-detector中
 def cp_query_file(query_file_path, size):
     for i in range(0, size):
-        cp_script = subprocess.Popen("cp "
-                                     + os.path.join(query_file_path, "query_{}.file".format(i + 1))
+        cp_script = subprocess.Popen("cd " + query_file_path + " && cp "
+                                     + "query_{}.file".format(i + 1)
                                      + " ../../clone-detector/",
                                      shell=True,
                                      stdin=subprocess.PIPE,
@@ -73,28 +72,28 @@ def cp_query_file(query_file_path, size):
 
 # 复制blocks.file到dataset中
 def cp_blocks_file(block_file_path):
-    cp_script = subprocess.Popen("cp "
-                                 + os.path.join(block_file_path, "blocks.file")
-                                 + " ../../clone-detector/input/dataset/",
+    cp_script = subprocess.Popen("cd " + block_file_path + " && cp blocks.file ../../clone-detector/input/dataset/",
                                  shell=True,
                                  stdin=subprocess.PIPE,
                                  stdout=subprocess.PIPE,
                                  stderr=subprocess.PIPE)
     cp_script.wait()
+
 
 # 运行查重工具
 def run_controller(controller_path):
-    cp_script = subprocess.Popen("python " + os.path.join(controller_path, "controller.py"),
-                                 shell=True,
-                                 stdin=subprocess.PIPE,
-                                 stdout=subprocess.PIPE,
-                                 stderr=subprocess.PIPE)
-    cp_script.wait()
+    run_script = subprocess.Popen("cd " + controller_path + " && python controller.py",
+                                  shell=True,
+                                  stdin=subprocess.PIPE,
+                                  stdout=subprocess.PIPE,
+                                  stderr=subprocess.PIPE)
+    print(run_script.communicate())
+    print(run_script.returncode)
+
 
 # 导出查重结果
 def export_result(detector_path):
-    export_script = subprocess.Popen("python " + os.path.join(detector_path, "/NODE_*/output8.0/query_*") + " > "
-                                     + os.path.join(detector_path, "result.pairs"),
+    export_script = subprocess.Popen("cd " + detector_path + " && cat NODE_*/output8.0/query_* > result.pairs",
                                      shell=True,
                                      stdin=subprocess.PIPE,
                                      stdout=subprocess.PIPE,
@@ -104,9 +103,9 @@ def export_result(detector_path):
 
 if __name__ == "__main__":
     clone_detector_path = "/home/viewv/Downloads/SourcererCC/clone-detector"
-    tokenizer_path = "/home/viewv/Downloads/SourcererCC/tokenizers"
+    tokenizer_path = "/home/viewv/Downloads/SourcererCC/tokenizers/file-level"
 
-    gen_projects_list(tokenizer_path)
+    gen_projects_list(os.path.join(tokenizer_path, "jupyter_so"))
     cleanup(tokenizer_path)
     gen_token(tokenizer_path)
     gen_query_file(tokenizer_path, 2)
