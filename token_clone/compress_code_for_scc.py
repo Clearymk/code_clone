@@ -5,10 +5,10 @@ import os
 
 
 def write_jupyter_code_into_zip(jupyter_zip_path):
-    for jupyter_path, min_id, max_id in db.query_jupyter_id_from_jupyter_group_by_jupyter_path():
+    for jupyter_path in db.query_jupyter_id_from_jupyter_group_by_jupyter_path():
         temp = 1
 
-        for code in db.query_code_from_jupyter_by_id_range(min_id, max_id):
+        for code in db.query_code_from_jupyter_by_jupyter_path(jupyter_path[0]):
             # 将查询到的代码写入python文件中
             trimmer = CodeTrimmer(code[0])
             trimmer.remove_comments_and_docstrings()
@@ -17,14 +17,14 @@ def write_jupyter_code_into_zip(jupyter_zip_path):
                 f.write(code)
             temp += 1
         # 将写入的python文件压缩进一个zip文件中
-        writer_into_zip(temp, jupyter_path.split(os.sep)[-1].split(".")[0], jupyter_zip_path)
+        writer_into_zip(temp, jupyter_path[0].split(os.sep)[-1].split(".")[0], jupyter_zip_path)
 
 
 def write_so_code_into_zip(so_zip_path):
-    for so_post_id, min_id, max_id in db.query_so_id_from_so_group_by_post_id():
+    for so_post_id in db.query_so_id_from_so_group_by_post_id():
         temp = 1
 
-        for code in db.query_code_from_so_by_id_range(min_id, max_id):
+        for code in db.query_code_from_so_by_post_id(so_post_id[0]):
             # 将查询到的代码写入python文件中
             trimmer = CodeTrimmer(code[0])
             trimmer.remove_comments_and_docstrings()
@@ -33,7 +33,7 @@ def write_so_code_into_zip(so_zip_path):
                 f.write(code)
             temp += 1
         # 将写入的python文件压缩进一个zip文件中, 由于文件名以post_id作为名字，所以不需要移除后缀名
-        writer_into_zip(temp, so_post_id.split(os.sep)[-2], so_zip_path)
+        writer_into_zip(temp, so_post_id[0].split(os.sep)[-2], so_zip_path)
 
 
 def writer_into_zip(file_range, zip_file_name, zip_path):

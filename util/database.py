@@ -16,37 +16,47 @@ class DataBase(object):
             self.__init__()
 
     def query_id_hash_value_from_jupyter(self):
-        query_sql = "select id, hash_value from jupyter_code_snippet"
+        query_sql = "select id, hash_value " \
+                    "from jupyter_code_snippet"
         cursor = self.mysql.cursor()
         cursor.execute(query_sql)
-        return cursor.fetchall()
-
-    def query_code_from_jupyter_by_id_range(self, min_id, max_id):
-        query_sql = "select code from jupyter_code_snippet where id <= %s and id >= %s"
-        cursor = self.mysql.cursor()
-        cursor.execute(query_sql, (max_id, min_id))
-        return cursor.fetchall()
-
-    def query_code_from_so_by_id_range(self, max_id, min_id):
-        query_sql = "select code from so_code_snippet where id <= %s and id >= %s"
-        cursor = self.mysql.cursor()
-        cursor.execute(query_sql, (max_id, min_id))
         return cursor.fetchall()
 
     def query_id_hash_value_from_so(self):
-        query_sql = "select id, hash_value from so_code_snippet"
+        query_sql = "select id, hash_value " \
+                    "from so_code_snippet"
         cursor = self.mysql.cursor()
         cursor.execute(query_sql)
         return cursor.fetchall()
 
+    def query_code_from_so_by_post_id(self, post_id):
+        query_sql = "select code " \
+                    "from so_code_snippet " \
+                    "where so_post_id=%s"
+        cursor = self.mysql.cursor()
+        cursor.execute(query_sql, (post_id,))
+        return cursor.fetchall()
+
+    def query_code_from_jupyter_by_jupyter_path(self, jupyter_path):
+        query_sql = "select code " \
+                    "from jupyter_code_snippet " \
+                    "where jupyter_path=%s"
+        cursor = self.mysql.cursor()
+        cursor.execute(query_sql, (jupyter_path,))
+        return cursor.fetchall()
+
     def query_so_id_by_hash_value(self, hash_value):
-        query_sql = "select id from so_code_snippet where hash_value=%s"
+        query_sql = "select id " \
+                    "from so_code_snippet " \
+                    "where hash_value=%s"
         cursor = self.mysql.cursor()
         cursor.execute(query_sql, (hash_value,))
         return cursor.fetchall()
 
     def query_jupyter_id_by_hash_value(self, hash_value):
-        query_sql = "select id from jupyter_code_snippet where hash_value=%s"
+        query_sql = "select id " \
+                    "from jupyter_code_snippet " \
+                    "where hash_value=%s"
         cursor = self.mysql.cursor()
         cursor.execute(query_sql, (hash_value,))
         return cursor.fetchall()
@@ -68,7 +78,7 @@ class DataBase(object):
         self.commit_insert(so_post_id)
 
     def insert_clone_pair(self, jupyter_code_snippet_id, so_code_snippet_id, clone_type):
-        insert_sql = "insert into clone_pair (jupyter_code_snippet_id, so_code_snippet_id, clone_type) " \
+        insert_sql = "INSERT INTO clone_pair (jupyter_code_snippet_id, so_code_snippet_id, clone_type) " \
                      "VALUES (%s, %s, %s)"
         cursor = self.mysql.cursor()
         cursor.execute(insert_sql, (jupyter_code_snippet_id, so_code_snippet_id, clone_type))
@@ -76,7 +86,7 @@ class DataBase(object):
         self.commit_insert(str(jupyter_code_snippet_id) + " " + str(so_code_snippet_id))
 
     def query_so_id_from_so_group_by_post_id(self):
-        query_sql = "select so_post_id, min(id), max(id) " \
+        query_sql = "select so_post_id " \
                     "from so_code_snippet " \
                     "group by so_post_id"
 
@@ -85,7 +95,7 @@ class DataBase(object):
         return cursor.fetchall()
 
     def query_jupyter_id_from_jupyter_group_by_jupyter_path(self):
-        query_sql = "select jupyter_path, min(id), max(id) " \
+        query_sql = "select jupyter_path " \
                     "from jupyter_code_snippet " \
                     "group by jupyter_path"
 
