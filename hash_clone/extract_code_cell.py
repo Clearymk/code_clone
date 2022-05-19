@@ -1,6 +1,6 @@
 from nbformat import read, NO_CONVERT
-from code_trimmer import CodeTrimmer
-import database
+from util.code_trimmer import CodeTrimmer
+from util.database import DataBase
 import os
 import hashlib
 
@@ -27,7 +27,7 @@ def flatten(list_of_lists):
 
 if __name__ == "__main__":
     path = "C:\\Users\\10952\\Desktop"
-    db = database.DataBase()
+    db = DataBase()
     jupyter_paths = []
     for root, dirs, files in os.walk(path):
         dirs[:] = [os.path.join(root, d) for d in dirs]

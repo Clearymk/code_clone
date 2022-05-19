@@ -1,11 +1,11 @@
 import os
 import re
-from code_trimmer import CodeTrimmer
-import database
+from util.code_trimmer import CodeTrimmer
+from util.database import DataBase
 import hashlib
 
 if __name__ == "__main__":
-    db = database.DataBase()
+    db = DataBase()
     path = "E:\\test"
     so_snippet_paths = []
 
