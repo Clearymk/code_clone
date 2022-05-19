@@ -17,7 +17,7 @@ def write_jupyter_code_into_zip(jupyter_zip_path):
                 f.write(code)
             temp += 1
         # 将写入的python文件压缩进一个zip文件中
-        writer_into_zip(temp, jupyter_path[0].split(os.sep)[-1].split(".")[0], jupyter_zip_path)
+        writer_into_zip(temp, jupyter_path[0].split("\\")[-1].split(".")[0], jupyter_zip_path)
 
 
 def write_so_code_into_zip(so_zip_path):
@@ -33,7 +33,7 @@ def write_so_code_into_zip(so_zip_path):
                 f.write(code)
             temp += 1
         # 将写入的python文件压缩进一个zip文件中, 由于文件名以post_id作为名字，所以不需要移除后缀名
-        writer_into_zip(temp, so_post_id[0].split(os.sep)[-2], so_zip_path)
+        writer_into_zip(temp, so_post_id[0], so_zip_path)
 
 
 def writer_into_zip(file_range, zip_file_name, zip_path):
@@ -46,7 +46,7 @@ def writer_into_zip(file_range, zip_file_name, zip_path):
 
 if __name__ == "__main__":
     db = DataBase()
-    zip_path = "jupyter_zip"
+    zip_path = "/home/viewv/Downloads/SourcererCC/tokenizers/file-level/jupyter_so/jupyter_zip"
     write_jupyter_code_into_zip(zip_path)
-    zip_path = "so_zip"
+    zip_path = "/home/viewv/Downloads/SourcererCC/tokenizers/file-level/jupyter_so/so_zip"
     write_so_code_into_zip(zip_path)
