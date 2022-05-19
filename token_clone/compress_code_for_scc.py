@@ -33,7 +33,7 @@ def write_so_code_into_zip(so_zip_path):
                 f.write(code)
             temp += 1
         # 将写入的python文件压缩进一个zip文件中, 由于文件名以post_id作为名字，所以不需要移除后缀名
-        writer_into_zip(temp, so_post_id[0].split(os.sep)[-2], so_zip_path)
+        writer_into_zip(temp, so_post_id[0], so_zip_path)
 
 
 def writer_into_zip(file_range, zip_file_name, zip_path):

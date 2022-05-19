@@ -26,7 +26,7 @@ def flatten(list_of_lists):
 
 
 if __name__ == "__main__":
-    path = "C:\\Users\\10952\\Desktop"
+    path = "C:\\Users\\10952\\Desktop\\"
     db = DataBase()
     jupyter_paths = []
     for root, dirs, files in os.walk(path):
