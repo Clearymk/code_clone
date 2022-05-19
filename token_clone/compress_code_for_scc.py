@@ -37,7 +37,13 @@ def write_so_code_into_zip(so_zip_path):
 
 
 def writer_into_zip(file_range, zip_file_name, zip_path):
-    with ZipFile(os.path.join(zip_path, zip_file_name + ".zip"), "w") as zf:
+    zip_file = os.path.join(zip_path, zip_file_name + ".zip")
+    count = 1
+    while os.path.exists(zip_file):
+        zip_file = os.path.join(zip_path, zip_file_name + "_" + str(count) + ".zip")
+        count += 1
+
+    with ZipFile(zip_file, "w") as zf:
         for i in range(1, file_range):
             zf.write(str(i) + ".py")
             # 删除写入的python文件

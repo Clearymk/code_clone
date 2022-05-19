@@ -45,6 +45,6 @@ if __name__ == "__main__":
                 continue
 
             hash_value = hashlib.md5(trimmed_code.encode("utf-8")).hexdigest()
-            db.insert_jupyter_code_snippet(hash_value, cell_code, jupyter_path)
+            db.insert_jupyter_code_snippet(hash_value, cell_code, jupyter_path.replace(path, ""))
 
     db.mysql.commit()

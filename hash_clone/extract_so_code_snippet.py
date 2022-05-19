@@ -27,6 +27,6 @@ if __name__ == "__main__":
         if trimmed_code == "":
             continue
         hash_value = hashlib.md5(trimmed_code.encode("utf-8")).hexdigest()
-        db.insert_so_code_snippet(hash_value, code, so_snippet_path)
+        db.insert_so_code_snippet(hash_value, code, so_snippet_path.split(os.path.sep)[-2])
 
     db.mysql.commit()
