@@ -11,20 +11,32 @@ class DataBase(object):
                                          user='root',
                                          password='catlab1a509',
                                          database='jupyter')
-        except:
+        except Exception:
             time.sleep(2)
             self.__init__()
 
-    def query_hash_value_from_jupyter(self):
-        query_sql = "select hash_value from jupyter_code_snippet"
+    def query_id_hash_value_from_jupyter(self):
+        query_sql = "select id, hash_value from jupyter_code_snippet"
         cursor = self.mysql.cursor()
         cursor.execute(query_sql)
         return cursor.fetchall()
 
-    def query_hash_value_from_so(self):
-        query_sql = "select hash_value from so_code_snippet"
+    def query_id_hash_value_from_so(self):
+        query_sql = "select id, hash_value from so_code_snippet"
         cursor = self.mysql.cursor()
         cursor.execute(query_sql)
+        return cursor.fetchall()
+
+    def query_so_id_by_hash_value(self, hash_value):
+        query_sql = "select id from so_code_snippet where hash_value=%s"
+        cursor = self.mysql.cursor()
+        cursor.execute(query_sql, (hash_value,))
+        return cursor.fetchall()
+
+    def query_jupyter_id_by_hash_value(self, hash_value):
+        query_sql = "select id from jupyter_code_snippet where hash_value=%s"
+        cursor = self.mysql.cursor()
+        cursor.execute(query_sql, (hash_value,))
         return cursor.fetchall()
 
     def insert_jupyter_code_snippet(self, hash_value, code, jupyter_path):
@@ -45,11 +57,11 @@ class DataBase(object):
 
     def insert_clone_pair(self, jupyter_code_snippet_id, so_code_snippet_id, clone_type):
         insert_sql = "insert into clone_pair (jupyter_code_snippet_id, so_code_snippet_id, clone_type) " \
-                     "VALUES ({}, {}, {})".format(jupyter_code_snippet_id, so_code_snippet_id, clone_type)
+                     "VALUES (%s, %s, %s)"
         cursor = self.mysql.cursor()
-        cursor.execute(insert_sql)
+        cursor.execute(insert_sql, (jupyter_code_snippet_id, so_code_snippet_id, clone_type))
         cursor.close()
-        self.commit_insert(str(jupyter_code_snippet_id + " " + so_code_snippet_id))
+        self.commit_insert(str(jupyter_code_snippet_id) + " " + str(so_code_snippet_id))
 
     def commit_insert(self, insert_info):
         self.count += 1

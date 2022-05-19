@@ -1,5 +1,5 @@
 from nbformat import read, NO_CONVERT
-import code_trimmer
+from code_trimmer import CodeTrimmer
 import database
 import os
 import hashlib
@@ -39,7 +39,7 @@ if __name__ == "__main__":
 
     for jupyter_path in jupyter_paths:
         for cell_code in extract_code_cells(jupyter_path):
-            trimmed_code = code_trimmer.CodeTrimmer(cell_code).trim()
+            trimmed_code = CodeTrimmer(cell_code).trim()
 
             if trimmed_code == "":
                 continue

@@ -1,6 +1,6 @@
 import os
 import re
-import code_trimmer
+from code_trimmer import CodeTrimmer
 import database
 import hashlib
 
@@ -23,7 +23,7 @@ if __name__ == "__main__":
             for line in f.readlines():
                 code += line
 
-        trimmed_code = code_trimmer.CodeTrimmer(code).trim()
+        trimmed_code = CodeTrimmer(code).trim()
         if trimmed_code == "":
             continue
         hash_value = hashlib.md5(trimmed_code.encode("utf-8")).hexdigest()
