@@ -29,16 +29,16 @@ class DataBase(object):
         cursor.execute(query_sql)
         return cursor.fetchall()
 
-    def query_code_from_so_by_post_id(self, post_id):
-        query_sql = "select code " \
+    def query_id_code_from_so_by_post_id(self, post_id):
+        query_sql = "select id, code " \
                     "from so_code_snippet " \
                     "where so_post_id=%s"
         cursor = self.mysql.cursor()
         cursor.execute(query_sql, (post_id,))
         return cursor.fetchall()
 
-    def query_code_from_jupyter_by_jupyter_path(self, jupyter_path):
-        query_sql = "select code " \
+    def query_id_code_from_jupyter_by_jupyter_path(self, jupyter_path):
+        query_sql = "select id, code " \
                     "from jupyter_code_snippet " \
                     "where jupyter_path=%s"
         cursor = self.mysql.cursor()
@@ -67,7 +67,7 @@ class DataBase(object):
         cursor = self.mysql.cursor()
         cursor.execute(insert_sql, (hash_value, code, jupyter_path))
         cursor.close()
-        self.commit_insert(jupyter_path)
+        self.commit(jupyter_path)
 
     def insert_so_code_snippet(self, hash_value, code, so_post_id):
         insert_sql = "insert into so_code_snippet (hash_value, code, so_post_id) " \
@@ -75,7 +75,7 @@ class DataBase(object):
         cursor = self.mysql.cursor()
         cursor.execute(insert_sql, (hash_value, code, so_post_id))
         cursor.close()
-        self.commit_insert(so_post_id)
+        self.commit(so_post_id)
 
     def insert_clone_pair(self, jupyter_code_snippet_id, so_code_snippet_id, clone_type):
         insert_sql = "INSERT INTO clone_pair (jupyter_code_snippet_id, so_code_snippet_id, clone_type) " \
@@ -83,7 +83,7 @@ class DataBase(object):
         cursor = self.mysql.cursor()
         cursor.execute(insert_sql, (jupyter_code_snippet_id, so_code_snippet_id, clone_type))
         cursor.close()
-        self.commit_insert(str(jupyter_code_snippet_id) + " " + str(so_code_snippet_id))
+        self.commit(str(jupyter_code_snippet_id) + " " + str(so_code_snippet_id))
 
     def query_so_id_from_so_group_by_post_id(self):
         query_sql = "select so_post_id " \
@@ -103,7 +103,44 @@ class DataBase(object):
         cursor.execute(query_sql)
         return cursor.fetchall()
 
-    def commit_insert(self, insert_info):
+    def query_jupyter_id_by_zip_path(self, jupyter_zip_path):
+        query_sql = "select id " \
+                    "from jupyter_code_snippet " \
+                    "where zip_path=%s"
+
+        cursor = self.mysql.cursor()
+        cursor.execute(query_sql, (jupyter_zip_path,))
+        return cursor.fetchall()
+
+    def query_so_id_by_zip_path(self, so_zip_path):
+        query_sql = "select id " \
+                    "from so_code_snippet " \
+                    "where zip_path=%s"
+
+        cursor = self.mysql.cursor()
+        cursor.execute(query_sql, (so_zip_path,))
+        return cursor.fetchall()
+
+
+    def update_zip_path_by_jupyter_id(self, jupyter_zip_path, jupyter_id):
+        update_sql = "update jupyter_code_snippet " \
+                     "set zip_path = %s " \
+                     "where id = %s"
+        cursor = self.mysql.cursor()
+        cursor.execute(update_sql, (jupyter_zip_path, jupyter_id))
+        cursor.close()
+        self.commit(jupyter_id + " " + jupyter_zip_path)
+
+    def update_zip_path_by_post_id(self, so_zip_path, post_id):
+        update_sql = "update so_code_snippet " \
+                     "set zip_path = %s " \
+                     "where so_post_id = %s"
+        cursor = self.mysql.cursor()
+        cursor.execute(update_sql, (so_zip_path, post_id))
+        cursor.close()
+        self.commit(post_id + " " + so_zip_path)
+
+    def commit(self, insert_info):
         self.count += 1
         # 当count大于阈值时提交
         if self.count >= 1:
