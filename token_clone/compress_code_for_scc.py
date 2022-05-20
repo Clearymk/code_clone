@@ -11,19 +11,14 @@ def write_jupyter_code_into_zip(jupyter_zip_path):
 
         for jupyter_id, code in db.query_id_code_from_jupyter_by_jupyter_path(jupyter_path[0]):
             # 将查询到的代码写入python文件中
-            trimmer = CodeTrimmer(code)
-            trimmer.remove_comments_and_docstrings()
-            code = trimmer.code
-            with open(str(temp) + ".py", "w", encoding="utf8") as f:
-                f.write(code)
             jupyter_snippet_id.append(jupyter_id)
             temp += 1
         # 将写入的python文件压缩进一个zip文件中
-        jupyter_zip_file = writer_into_zip(temp, jupyter_path[0].split("\\")[-1].split(".")[0], jupyter_zip_path)
+        jupyter_zip_file = writer_into_zip(temp, os.path.splitext(jupyter_path[0].split("\\")[-1])[0], jupyter_zip_path)
 
         for i in range(1, temp):
             db.update_zip_path_by_jupyter_id(jupyter_snippet_id[i - 1],
-                                             os.path.join(jupyter_zip_file, str(temp) + ".py"))
+                                             os.path.join(jupyter_zip_file, str(i) + ".py"))
 
 
 def write_so_code_into_zip(so_zip_path):
@@ -33,9 +28,6 @@ def write_so_code_into_zip(so_zip_path):
 
         for so_id, code in db.query_id_code_from_so_by_post_id(so_post_id[0]):
             # 将查询到的代码写入python文件中
-            trimmer = CodeTrimmer(code[0])
-            trimmer.remove_comments_and_docstrings()
-            code = trimmer.code
             with open(str(temp) + ".py", "w", encoding="utf8") as f:
                 f.write(code)
             so_snippet_id.append(so_id)
@@ -44,17 +36,19 @@ def write_so_code_into_zip(so_zip_path):
         so_zip_file = writer_into_zip(temp, so_post_id[0], so_zip_path)
 
         for i in range(1, temp):
-            db.update_zip_path_by_jupyter_id(so_snippet_id[i - 1],
-                                             os.path.join(so_zip_file, str(temp) + ".py"))
+            db.update_zip_path_by_post_id(so_snippet_id[i - 1],
+                                             os.path.join(so_zip_file, str(i) + ".py"))
 
 
 def writer_into_zip(file_range, zip_file_name, zip_path):
+    if zip_file_name == "":
+        print()
     zip_file = os.path.join(zip_path, zip_file_name + ".zip")
 
     count = 1
     while os.path.exists(zip_file):
         count += 1
-        zip_file = os.path.join(zip_path, zip_file_name + str(count) + ".zip")
+        zip_file = os.path.join(zip_path, zip_file_name + "_" + str(count) + ".zip")
 
     with ZipFile(zip_file, "w") as zf:
         for i in range(1, file_range):

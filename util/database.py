@@ -110,7 +110,7 @@ class DataBase(object):
 
         cursor = self.mysql.cursor()
         cursor.execute(query_sql, (jupyter_zip_path,))
-        return cursor.fetchall()
+        return cursor.fetchone()
 
     def query_so_id_by_zip_path(self, so_zip_path):
         query_sql = "select id " \
@@ -119,26 +119,25 @@ class DataBase(object):
 
         cursor = self.mysql.cursor()
         cursor.execute(query_sql, (so_zip_path,))
-        return cursor.fetchall()
+        return cursor.fetchone()
 
-
-    def update_zip_path_by_jupyter_id(self, jupyter_zip_path, jupyter_id):
+    def update_zip_path_by_jupyter_id(self, jupyter_id, jupyter_zip_path):
         update_sql = "update jupyter_code_snippet " \
                      "set zip_path = %s " \
                      "where id = %s"
         cursor = self.mysql.cursor()
         cursor.execute(update_sql, (jupyter_zip_path, jupyter_id))
         cursor.close()
-        self.commit(jupyter_id + " " + jupyter_zip_path)
+        self.commit(str(jupyter_id) + " " + jupyter_zip_path)
 
-    def update_zip_path_by_post_id(self, so_zip_path, post_id):
+    def update_zip_path_by_post_id(self, post_id, so_zip_path):
         update_sql = "update so_code_snippet " \
                      "set zip_path = %s " \
-                     "where so_post_id = %s"
+                     "where id = %s"
         cursor = self.mysql.cursor()
         cursor.execute(update_sql, (so_zip_path, post_id))
         cursor.close()
-        self.commit(post_id + " " + so_zip_path)
+        self.commit(str(post_id) + " " + so_zip_path)
 
     def commit(self, insert_info):
         self.count += 1
@@ -146,4 +145,4 @@ class DataBase(object):
         if self.count >= 1:
             self.count = 0
             self.mysql.commit()
-        print("insert success insert info = " + str(insert_info))
+        print("success info = " + str(insert_info))

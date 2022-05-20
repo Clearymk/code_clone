@@ -30,6 +30,8 @@ if __name__ == "__main__":
             dest_info = clone_info[2] + "," + clone_info[3]
             dest_path = file_dict[dest_info]
 
+            # print(src_path, dest_path)
+
             if dest_path.__contains__(so_path):
                 so = 2
             elif dest_path.__contains__(jupyter_path):
@@ -37,10 +39,9 @@ if __name__ == "__main__":
 
             if so > 0 and jupyter > 0:
                 if so == 1:
-                    so_id = db.query_so_id_by_zip_path(src_path)
-                    jupyter_id = db.query_jupyter_id_by_zip_path(dest_path)
+                    so_id = db.query_so_id_by_zip_path(src_path[1:-1])[0]
+                    jupyter_id = db.query_jupyter_id_by_zip_path(dest_path[1:-1])[0]
                 else:
-                    so_id = db.query_jupyter_id_by_zip_path(dest_path)
-                    jupyter_id = db.query_jupyter_id_by_zip_path(src_path)
-
+                    so_id = db.query_jupyter_id_by_zip_path(dest_path[1:-1])[0]
+                    jupyter_id = db.query_jupyter_id_by_zip_path(src_path[1:-1])[0]
                 db.insert_clone_pair(jupyter_id, so_id, 2)
