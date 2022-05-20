@@ -142,7 +142,8 @@ class DataBase(object):
     def commit(self, insert_info):
         self.count += 1
         # 当count大于阈值时提交
-        if self.count >= 1:
+        if self.count >= 1000:
             self.count = 0
             self.mysql.commit()
+            print("success commit")
         print("success info = " + str(insert_info))
