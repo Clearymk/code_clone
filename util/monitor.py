@@ -57,7 +57,7 @@ if __name__ == "__main__":
         # print("jupyter total size: " + str(jupyter_cur_count))
         # jupyter_count = jupyter_cur_count
 
-        clone_pair_cur_count = db.query_jupyter_count()
+        clone_pair_cur_count = db.query_clone_pair_count()
         print("clone pair diff size: " + str(clone_pair_cur_count - clone_pair_count))
         print("clone pair total size: " + str(clone_pair_cur_count))
         clone_pair_count = clone_pair_cur_count
