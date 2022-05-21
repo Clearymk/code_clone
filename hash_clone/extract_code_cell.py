@@ -37,21 +37,17 @@ if __name__ == "__main__":
         if len(files) > 0:
             jupyter_paths.extend(files)
 
-        if len(jupyter_paths) > 1000:
-            break
-
     for jupyter_path in jupyter_paths:
         for cell_code in extract_code_cells(jupyter_path):
             try:
                 trimmed_code = CodeTrimmer(cell_code).trim()
+
+                if trimmed_code == "":
+                    continue
+
+                hash_value = hashlib.md5(trimmed_code.encode("utf-8")).hexdigest()
+                db.insert_jupyter_code_snippet(hash_value, cell_code, jupyter_path.replace(path, ""))
             except Exception as e:
                 print(e)
-                continue
-
-            if trimmed_code == "":
-                continue
-
-            hash_value = hashlib.md5(trimmed_code.encode("utf-8")).hexdigest()
-            db.insert_jupyter_code_snippet(hash_value, cell_code, jupyter_path.replace(path, ""))
 
     db.mysql.commit()
