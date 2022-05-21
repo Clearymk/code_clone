@@ -104,8 +104,9 @@ def export_result(detector_path):
 if __name__ == "__main__":
     clone_detector_path = "/home/viewv/Downloads/SourcererCC/clone-detector"
     tokenizer_path = "/home/viewv/Downloads/SourcererCC/tokenizers/file-level"
+    jupyter_so_path = "/media/viewv/Data/"
 
-    gen_projects_list(os.path.join(tokenizer_path, "jupyter_so"))
+    gen_projects_list(os.path.join(jupyter_so_path, "jupyter_so"))
     cleanup(tokenizer_path)
     gen_token(tokenizer_path)
     gen_query_file(tokenizer_path, 2)
