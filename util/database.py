@@ -45,6 +45,12 @@ class DataBase(object):
         cursor.execute(query_sql, (jupyter_path,))
         return cursor.fetchall()
 
+    def query_by_sql(self, sql):
+        query_sql = sql
+        cursor = self.mysql.cursor()
+        cursor.execute(query_sql)
+        return cursor.fetchall()
+
     def query_so_id_by_hash_value(self, hash_value):
         query_sql = "select id " \
                     "from so_code_snippet " \

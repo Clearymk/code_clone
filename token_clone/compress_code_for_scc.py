@@ -15,7 +15,7 @@ def write_jupyter_code_into_zip(jupyter_zip_path):
             jupyter_snippet_id.append(jupyter_id)
             temp += 1
         # 将写入的python文件压缩进一个zip文件中
-        # os.path.splitext(jupyter_path[0].split("\\")[-1])[0]
+        # os.path.splitext(jupyter_path[0].split("\\")[-1])[0] 得到文件名
         jupyter_zip_file = writer_into_zip(temp, os.path.splitext(jupyter_path[0].split("\\")[-1])[0], jupyter_zip_path)
 
         for i in range(1, temp):
