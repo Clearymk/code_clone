@@ -40,6 +40,8 @@ if __name__ == "__main__":
     for jupyter_path in jupyter_paths:
         for cell_code in extract_code_cells(jupyter_path):
             try:
+                if cell_code.count('\n') <= 4:
+                    continue
                 trimmed_code = CodeTrimmer(cell_code).trim()
 
                 if trimmed_code == "":

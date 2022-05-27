@@ -51,6 +51,12 @@ class DataBase(object):
         cursor.execute(query_sql)
         return cursor.fetchall()
 
+    def query_by_sql_cursor(self, sql):
+        query_sql = sql
+        cursor = self.mysql.cursor()
+        cursor.execute(query_sql)
+        return cursor
+
     def query_so_id_by_hash_value(self, hash_value):
         query_sql = "select id " \
                     "from so_code_snippet " \
@@ -151,6 +157,38 @@ class DataBase(object):
         cursor.execute(update_sql, (so_zip_path, post_id))
         cursor.close()
         self.commit(str(post_id) + " " + so_zip_path)
+
+    def delete_clone_pair_by_jupyter_id(self, jupyter_id):
+        delete_sql = "delete from jupyter.clone_pair " \
+                     "where jupyter_code_snippet_id = %s"
+        cursor = self.mysql.cursor()
+        cursor.execute(delete_sql, (jupyter_id,))
+        cursor.close()
+        self.commit(jupyter_id)
+
+    def delete_clone_pair_by_so_id(self, so_id):
+        delete_sql = "delete from jupyter.clone_pair " \
+                     "where so_code_snippet_id = %s"
+        cursor = self.mysql.cursor()
+        cursor.execute(delete_sql, (so_id,))
+        cursor.close()
+        self.commit(so_id)
+
+    def delete_jupyter_by_jupyter_id(self, so_id):
+        delete_sql = "delete from jupyter.so_code_snippet " \
+                     "where id = %s"
+        cursor = self.mysql.cursor()
+        cursor.execute(delete_sql, (so_id,))
+        cursor.close()
+        self.commit(so_id)
+
+    def delete_so_by_so_id(self, jupyter_id):
+        delete_sql = "delete from jupyter.jupyter_code_snippet " \
+                     "where id = %s"
+        cursor = self.mysql.cursor()
+        cursor.execute(delete_sql, (jupyter_id,))
+        cursor.close()
+        self.commit(jupyter_id)
 
     def commit(self, insert_info):
         self.count += 1
