@@ -94,6 +94,13 @@ class DataBase(object):
         cursor.execute(query_sql)
         return cursor.fetchall()
 
+    def query_clone_pair_contains(self, so_id, jupyter_id):
+        query_sql = "select * from clone_pair where jupyter_code_snippet_id = %s and so_code_snippet_id = %s"
+
+        cursor = self.mysql.cursor()
+        cursor.execute(query_sql, (jupyter_id, so_id))
+        return len(cursor.fetchall()) > 0
+
     def query_jupyter_id_from_jupyter_group_by_jupyter_path(self):
         query_sql = "select jupyter_path " \
                     "from jupyter_code_snippet " \
@@ -142,7 +149,7 @@ class DataBase(object):
     def commit(self, insert_info):
         self.count += 1
         # 当count大于阈值时提交
-        if self.count >= 1000:
+        if self.count >= 10:
             self.count = 0
             self.mysql.commit()
             print("success commit")
