@@ -3,17 +3,16 @@ import re
 from util.database import DataBase
 
 db = DataBase()
-jupyter_data = []
+jupyter_data = set()
 ILLEGAL_CHARACTERS_RE = re.compile(r'[\000-\010]|[\013-\014]|[\016-\037]')
 book_name_xls = 'jupyter_code_snippet_github_project_0{}.xlsx'
 value_title = ["id", "code", "github_project_path"]
 
 for _ in db.query_by_sql("select id, code,jupyter_path from jupyter.jupyter_code_snippet"):
-    data = [_[0], _[1]]
     github_project_link = "https://github.com/" + _[2].split("\\")[0].replace("_", "/", 1)
-    data.append(github_project_link)
-    jupyter_data.append(data)
+    jupyter_data.add(github_project_link)
 
+jupyter_data = list(jupyter_data)
 
 
 def chunks(l, n):
@@ -30,9 +29,7 @@ for _ in chunks(jupyter_data, 1048575):
     worksheet.append(value_title)
     for row in _:
         print(row)
-        data = [ILLEGAL_CHARACTERS_RE.sub(r'', str(row[0])),
-                ILLEGAL_CHARACTERS_RE.sub(r'', str(row[1]).replace("\n", "")),
-                ILLEGAL_CHARACTERS_RE.sub(r'', str(row[2]))]
+        data = [ILLEGAL_CHARACTERS_RE.sub(r'', str(row))]
         worksheet.append(data)
     workbook.save(filename=save_file)
     file_count += 1
