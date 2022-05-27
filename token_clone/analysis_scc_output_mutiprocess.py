@@ -4,11 +4,12 @@ from util.database import DataBase
 
 urls_queue = Queue()
 max_process = 4
-scc_result = "scc_result/result.pairs"
-file_index = "scc_result/files-stats-0.stats"
+scc_result = "/media/viewv/Data/SourcererCC/clone-detector/result.pairs"
+file_index = "/media/viewv/Data/SourcererCC/tokenizers/file-level/files_stats/files-stats-0.stats"
 so_path = "/home/viewv/Downloads/SourcererCC/tokenizers/file-level/jupyter_so/so_zip"
 jupyter_path = "/home/viewv/Downloads/SourcererCC/tokenizers/file-level/jupyter_so/jupyter_zip"
 db = DataBase()
+file_dict = {}
 
 
 def read_clone_pairs():
@@ -50,7 +51,7 @@ def process_clone_pair(clone_pair):
 
 
 def scc_output_processor():
-    print('start send request processor')
+    print('start scc output processor')
     while True:
         url = urls_queue.get()
         if url == "DONE":
@@ -79,9 +80,9 @@ def main():
     clone_pair_reader_thread.join()
 
 
-def init_file_dict(file_dict):
+def init_file_index():
     with open(file_index, "r", encoding="utf8") as f:
-        for line in f.readlines():
+        for line in f:
             file_info = line.strip().split(",")
             file_id = file_info[0] + "," + file_info[1]
             file_path = file_info[2]
@@ -89,6 +90,5 @@ def init_file_dict(file_dict):
 
 
 if __name__ == '__main__':
-    file_dict = {}
-    init_file_dict(file_dict)
+    init_file_index()
     main()
