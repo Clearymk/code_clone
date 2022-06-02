@@ -1,7 +1,6 @@
 from database import DataBase
 
 db = DataBase()
-cursor = db.query_by_sql_cursor("select id, code from jupyter.jupyter_code_snippet")
 
 
 def remove_jupyter(jupyter_id):
@@ -24,7 +23,9 @@ def remove_so(so_id):
     db.delete_so_by_so_id(so_id)
 
 
+cursor = db.query_by_sql_cursor("select id, code from jupyter.jupyter_code_snippet")
 row = cursor.fetchone()
+
 while row is not None:
     jupyter_id = row[0]
     jupyter_code = row[1]
@@ -33,8 +34,8 @@ while row is not None:
     row = cursor.fetchone()
 
 cursor = db.query_by_sql_cursor("select id, code from jupyter.so_code_snippet")
-
 row = cursor.fetchone()
+
 while row is not None:
     so_id = row[0]
     so_code = row[1]

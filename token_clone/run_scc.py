@@ -6,6 +6,7 @@ import os
 
 
 def write_jupyter_code_into_zip(jupyter_zip_path):
+    # max id 5366231
     for jupyter_path in db.query_jupyter_id_from_jupyter_group_by_jupyter_path():
         temp = 1
         jupyter_snippet_id = []
@@ -103,17 +104,25 @@ def gen_token(tokenizer_path):
 
 # 生成query_file
 def gen_query_file(blocks_path, size):
-    tokens = []
-    with open(os.path.join(blocks_path, "blocks.file"), "r", encoding="utf8") as f:
-        for line in f.readlines():
-            tokens.append(line)
-    k, m = divmod(len(tokens), size)
-    count = 1
-    for query_file in (tokens[i * k + min(i, m):(i + 1) * k + min(i + 1, m)] for i in range(size)):
-        with open(os.path.join(blocks_path, "query_{}.file".format(count)), "w", encoding="utf8") as f:
-            for token in query_file:
-                f.write(token)
-        count += 1
+    cp_script = subprocess.Popen("cd " + blocks_path +
+                                 " && python unevensplit.py "
+                                 + os.path.join(blocks_path, "blocks.file") + " " + str(size),
+                                 shell=True,
+                                 stdin=subprocess.PIPE,
+                                 stdout=subprocess.PIPE,
+                                 stderr=subprocess.PIPE)
+    cp_script.wait()
+    # tokens = []
+    # with open(os.path.join(blocks_path, "blocks.file"), "r", encoding="utf8") as f:
+    #     for line in f.readlines():
+    #         tokens.append(line)
+    # k, m = divmod(len(tokens), size)
+    # count = 1
+    # for query_file in (tokens[i * k + min(i, m):(i + 1) * k + min(i + 1, m)] for i in range(size)):
+    #     with open(os.path.join(blocks_path, "query_{}.file".format(count)), "w", encoding="utf8") as f:
+    #         for token in query_file:
+    #             f.write(token)
+    #     count += 1
 
 
 # 复制query_file到clone-detector中
@@ -165,16 +174,17 @@ if __name__ == "__main__":
     tokenizer_path = "/media/viewv/Data/SourcererCC/tokenizers/file-level"
     jupyter_so_path = "/media/viewv/Data/jupyter_so/"
     db = DataBase()
-    zip_path = "/media/viewv/Data/jupyter_so/jupyter_zip"
-    write_jupyter_code_into_zip(zip_path)
-    zip_path = "/media/viewv/Data/jupyter_so/so_zip"
-    write_so_code_into_zip(zip_path)
-    db.mysql.commit()
-    gen_projects_list(jupyter_so_path, jupyter_so_path)
-    cleanup(tokenizer_path)
-    gen_token(tokenizer_path)
-    gen_query_file(tokenizer_path, 2)
+    # zip_path = "/media/viewv/Data/jupyter_so/jupyter_zip"
+    # write_jupyter_code_into_zip(zip_path)
+    # zip_path = "/media/viewv/Data/jupyter_so/so_zip"
+    # write_so_code_into_zip(zip_path)
+    # db.mysql.commit()
+
+    # gen_projects_list(jupyter_so_path, jupyter_so_path)
+    # cleanup(tokenizer_path)
+    # gen_token(tokenizer_path)
+    # gen_query_file(tokenizer_path, 2)
     cp_query_file(tokenizer_path, 2)
     cp_blocks_file(tokenizer_path)
-    run_controller(clone_detector_path)
-    export_result(clone_detector_path)
+    # run_controller(clone_detector_path)
+    # export_result(clone_detector_path)

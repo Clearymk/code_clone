@@ -4,6 +4,7 @@ import os
 
 
 def write_jupyter_code_into_zip(jupyter_zip_path):
+    # max id 5366231
     for jupyter_path in db.query_jupyter_id_from_jupyter_group_by_jupyter_path():
         temp = 1
         jupyter_snippet_id = []

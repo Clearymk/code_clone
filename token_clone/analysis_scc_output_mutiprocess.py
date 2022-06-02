@@ -6,8 +6,8 @@ urls_queue = Queue()
 max_process = 4
 scc_result = "/media/viewv/Data/SourcererCC/clone-detector/result.pairs"
 file_index = "/media/viewv/Data/SourcererCC/tokenizers/file-level/files_stats/files-stats-0.stats"
-so_path = "/home/viewv/Downloads/SourcererCC/tokenizers/file-level/jupyter_so/so_zip"
-jupyter_path = "/home/viewv/Downloads/SourcererCC/tokenizers/file-level/jupyter_so/jupyter_zip"
+so_path = "/media/viewv/Data/jupyter_so/so_zip"
+jupyter_path = "/media/viewv/Data/jupyter_so/jupyter_zip"
 db = DataBase()
 file_dict = {}
 
@@ -47,7 +47,11 @@ def process_clone_pair(clone_pair):
         else:
             so_id = db.query_jupyter_id_by_zip_path(dest_path[1:-1])[0]
             jupyter_id = db.query_jupyter_id_by_zip_path(src_path[1:-1])[0]
-        db.insert_clone_pair(jupyter_id, so_id, 2)
+        print(jupyter_id, so_id, "match !")
+        if not db.query_clone_pair_contains(so_id, jupyter_id):
+            db.insert_clone_pair(jupyter_id, so_id, 2)
+    else:
+        print(src_path, dest_path, "do not match")
 
 
 def scc_output_processor():
@@ -92,3 +96,4 @@ def init_file_index():
 if __name__ == '__main__':
     init_file_index()
     main()
+    db.mysql.commit()
