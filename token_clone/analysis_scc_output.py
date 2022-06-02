@@ -1,8 +1,8 @@
 from util.database import DataBase
 
 if __name__ == "__main__":
-    scc_result = "/media/viewv/Data/SourcererCC/clone-detector/result.pairs"
-    file_index = "scc_result/files-stats-0.stats"
+    scc_result = "../res/result.pairs"
+    file_index = "../res/files-stats-0.stats"
     so_path = "/media/viewv/Data/jupyter_so/so_zip"
     jupyter_path = "/media/viewv/Data/jupyter_so/jupyter_zip"
     db = DataBase()
@@ -49,6 +49,6 @@ if __name__ == "__main__":
                 if not db.query_clone_pair_contains(so_id, jupyter_id):
                     print(so_id, jupyter_id, "  match")
                     db.insert_clone_pair(jupyter_id, so_id, 2)
-            # else:
-            #     print(so, jupyter, " do not match")
+            else:
+                print(src_path, dest_path, " do not match")
     db.mysql.commit()

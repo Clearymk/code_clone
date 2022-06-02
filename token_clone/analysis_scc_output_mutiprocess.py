@@ -4,10 +4,8 @@ from util.database import DataBase
 
 urls_queue = Queue()
 max_process = 4
-scc_result = "/media/viewv/Data/SourcererCC/clone-detector/result.pairs"
-file_index = "/media/viewv/Data/SourcererCC/tokenizers/file-level/files_stats/files-stats-0.stats"
-so_path = "/home/viewv/Downloads/SourcererCC/tokenizers/file-level/jupyter_so/so_zip"
-jupyter_path = "/home/viewv/Downloads/SourcererCC/tokenizers/file-level/jupyter_so/jupyter_zip"
+scc_result = "../res/result.pairs"
+file_index = "../res/files-stats-0.stats"
 db = DataBase()
 file_dict = {}
 
@@ -22,6 +20,8 @@ def read_clone_pairs():
 
 
 def process_clone_pair(clone_pair):
+    so_path = "/media/viewv/Data/jupyter_so/so_zip"
+    jupyter_path = "/media/viewv/Data/jupyter_so/jupyter_zip"
     clone_info = clone_pair.strip().split(",")
     so = jupyter = -1
     src_info = clone_info[0] + "," + clone_info[1]
