@@ -44,7 +44,7 @@ if __name__ == "__main__":
                     continue
                 trimmed_code = CodeTrimmer(cell_code).trim()
 
-                if trimmed_code == "":
+                if trimmed_code == "" or trimmed_code.count("\n") < 3:
                     continue
 
                 hash_value = hashlib.md5(trimmed_code.encode("utf-8")).hexdigest()

@@ -12,6 +12,10 @@ class CodeTrimmer:
         self.remove_white_spaces()
         return self.code
 
+    def trim_comment(self):
+        self.remove_comments_and_docstrings()
+        return self.code
+
     def remove_comments_and_docstrings(self):
         out = ""
         prev_toktype = tokenize.INDENT

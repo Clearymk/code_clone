@@ -28,7 +28,7 @@ if __name__ == "__main__":
 
             trimmed_code = CodeTrimmer(code).trim()
 
-            if trimmed_code == "":
+            if trimmed_code == "" or trimmed_code.count("\n") < 3:
                 continue
             hash_value = hashlib.md5(trimmed_code.encode("utf-8")).hexdigest()
             db.insert_so_code_snippet(hash_value, code, so_snippet_path.split(os.path.sep)[-2])

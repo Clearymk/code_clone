@@ -8,7 +8,6 @@ scc_result = "/media/viewv/Data/SourcererCC/clone-detector/result.pairs"
 file_index = "/media/viewv/Data/SourcererCC/tokenizers/file-level/files_stats/files-stats-0.stats"
 so_path = "/media/viewv/Data/jupyter_so/so_zip"
 jupyter_path = "/media/viewv/Data/jupyter_so/jupyter_zip"
-db = DataBase()
 file_dict = {}
 
 
@@ -21,7 +20,7 @@ def read_clone_pairs():
         urls_queue.put("DONE")
 
 
-def process_clone_pair(clone_pair):
+def process_clone_pair(clone_pair, db):
     clone_info = clone_pair.strip().split(",")
     so = jupyter = -1
     src_info = clone_info[0] + "," + clone_info[1]
@@ -55,6 +54,7 @@ def process_clone_pair(clone_pair):
 
 
 def scc_output_processor():
+    db = DataBase()
     print('start scc output processor')
     while True:
         url = urls_queue.get()
@@ -62,9 +62,11 @@ def scc_output_processor():
             break
         else:
             try:
-                process_clone_pair(url)
+                process_clone_pair(url, db)
             except Exception as e:
+                print(url)
                 print(e)
+    db.mysql.commit()
 
 
 def main():
@@ -96,4 +98,3 @@ def init_file_index():
 if __name__ == '__main__':
     init_file_index()
     main()
-    db.mysql.commit()
