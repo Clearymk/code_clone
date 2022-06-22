@@ -26,7 +26,7 @@ def flatten(list_of_lists):
 
 
 if __name__ == "__main__":
-    path = "D:\\jupyter\\"
+    path = "/media/viewv/App/jupyter"
     db = DataBase()
     jupyter_paths = []
     for root, dirs, files in os.walk(path):
@@ -40,11 +40,10 @@ if __name__ == "__main__":
     for jupyter_path in jupyter_paths:
         for cell_code in extract_code_cells(jupyter_path):
             try:
-                if cell_code.count('\n') <= 4:
-                    continue
                 trimmed_code = CodeTrimmer(cell_code).trim()
+                remove_comment_code = CodeTrimmer(cell_code).remove_comments_and_docstrings()
 
-                if trimmed_code == "" or trimmed_code.count("\n") < 3:
+                if trimmed_code == "" or remove_comment_code.count("\n") < 4:
                     continue
 
                 hash_value = hashlib.md5(trimmed_code.encode("utf-8")).hexdigest()

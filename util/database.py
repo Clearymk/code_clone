@@ -17,7 +17,7 @@ class DataBase(object):
 
     def query_id_hash_value_from_jupyter(self):
         query_sql = "select id, hash_value " \
-                    "from jupyter_code_snippet"
+                    "from jupyter_code_snippet where id > 5376729"
         cursor = self.mysql.cursor()
         cursor.execute(query_sql)
         return cursor.fetchall()
@@ -120,6 +120,7 @@ class DataBase(object):
     def query_jupyter_id_from_jupyter_group_by_jupyter_path(self):
         query_sql = "select jupyter_path " \
                     "from jupyter_code_snippet " \
+                    "where id >= 5366231 " \
                     "group by jupyter_path"
 
         cursor = self.mysql.cursor()
@@ -201,7 +202,7 @@ class DataBase(object):
     def commit(self, insert_info):
         self.count += 1
         # 当count大于阈值时提交
-        if self.count >= 10:
+        if self.count >= 1000:
             self.count = 0
             self.mysql.commit()
             print("success commit")

@@ -43,7 +43,7 @@ class CodeTrimmer:
             last_col = end_col
             last_lineno = end_line
         out = '\n'.join(l for l in out.splitlines() if l.strip())
-        self.code = out
+        return out
 
     def remove_white_spaces(self):
         self.code = re.sub(r"\s+", "", self.code)
