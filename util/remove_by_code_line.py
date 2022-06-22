@@ -1,7 +1,7 @@
 from database import DataBase
+from code_trimmer import CodeTrimmer
 
 db = DataBase()
-cursor = db.query_by_sql_cursor("select id, code from jupyter.jupyter_code_snippet")
 
 
 def remove_jupyter(jupyter_id):
@@ -24,20 +24,32 @@ def remove_so(so_id):
     db.delete_so_by_so_id(so_id)
 
 
+cursor = db.query_by_sql_cursor("select id, code from jupyter.jupyter_code_snippet")
 row = cursor.fetchone()
+
 while row is not None:
-    jupyter_id = row[0]
-    jupyter_code = row[1]
-    if jupyter_code.count("\n") < 3:
-        remove_jupyter(jupyter_id)
+    try:
+        jupyter_id = row[0]
+        jupyter_code = row[1]
+        trimmed_code = CodeTrimmer(jupyter_code).trim_comment()
+        if trimmed_code.count("\n") < 3:
+            remove_jupyter(jupyter_id)
+    except Exception as e:
+        print(e)
+
     row = cursor.fetchone()
 
 cursor = db.query_by_sql_cursor("select id, code from jupyter.so_code_snippet")
-
 row = cursor.fetchone()
+
 while row is not None:
-    so_id = row[0]
-    so_code = row[1]
-    if so_code.count("\n") < 3:
-        remove_so(so_id)
+    try:
+        so_id = row[0]
+        so_code = row[1]
+        trimmed_code = CodeTrimmer(so_code).trim_comment()
+        if so_code.count("\n") < 3:
+            remove_so(so_id)
+    except Exception as e:
+        print(e)
+
     row = cursor.fetchone()

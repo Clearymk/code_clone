@@ -17,7 +17,7 @@ class DataBase(object):
 
     def query_id_hash_value_from_jupyter(self):
         query_sql = "select id, hash_value " \
-                    "from jupyter_code_snippet"
+                    "from jupyter_code_snippet where id > 5376729"
         cursor = self.mysql.cursor()
         cursor.execute(query_sql)
         return cursor.fetchall()
@@ -107,7 +107,11 @@ class DataBase(object):
         return cursor.fetchall()
 
     def query_clone_pair_contains(self, so_id, jupyter_id):
-        query_sql = "select * from clone_pair where jupyter_code_snippet_id = %s and so_code_snippet_id = %s"
+        query_sql = "select * " \
+                    "from clone_pair " \
+                    "where jupyter_code_snippet_id = %s " \
+                    "and so_code_snippet_id = %s " \
+                    "and clone_type = 2"
 
         cursor = self.mysql.cursor()
         cursor.execute(query_sql, (jupyter_id, so_id))
@@ -116,6 +120,7 @@ class DataBase(object):
     def query_jupyter_id_from_jupyter_group_by_jupyter_path(self):
         query_sql = "select jupyter_path " \
                     "from jupyter_code_snippet " \
+                    "where id >= 5366231 " \
                     "group by jupyter_path"
 
         cursor = self.mysql.cursor()
@@ -164,7 +169,8 @@ class DataBase(object):
         cursor = self.mysql.cursor()
         cursor.execute(delete_sql, (jupyter_id,))
         cursor.close()
-        self.commit(jupyter_id)
+        print("delete clone pair by jupyter id = ", jupyter_id)
+        self.mysql.commit()
 
     def delete_clone_pair_by_so_id(self, so_id):
         delete_sql = "delete from jupyter.clone_pair " \
@@ -172,28 +178,31 @@ class DataBase(object):
         cursor = self.mysql.cursor()
         cursor.execute(delete_sql, (so_id,))
         cursor.close()
-        self.commit(so_id)
+        print("delete clone pair by so id = ", so_id)
+        self.mysql.commit()
 
-    def delete_jupyter_by_jupyter_id(self, so_id):
+    def delete_so_by_so_id(self, so_id):
         delete_sql = "delete from jupyter.so_code_snippet " \
                      "where id = %s"
         cursor = self.mysql.cursor()
         cursor.execute(delete_sql, (so_id,))
         cursor.close()
-        self.commit(so_id)
+        print("delete so by so id = ", so_id)
+        self.mysql.commit()
 
-    def delete_so_by_so_id(self, jupyter_id):
+    def delete_jupyter_by_jupyter_id(self, jupyter_id):
         delete_sql = "delete from jupyter.jupyter_code_snippet " \
                      "where id = %s"
         cursor = self.mysql.cursor()
         cursor.execute(delete_sql, (jupyter_id,))
         cursor.close()
-        self.commit(jupyter_id)
+        print("delete jupyter by jupyter id = ", jupyter_id)
+        self.mysql.commit()
 
     def commit(self, insert_info):
         self.count += 1
         # 当count大于阈值时提交
-        if self.count >= 10:
+        if self.count >= 1000:
             self.count = 0
             self.mysql.commit()
             print("success commit")

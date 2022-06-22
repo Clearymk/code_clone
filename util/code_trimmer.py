@@ -12,6 +12,10 @@ class CodeTrimmer:
         self.remove_white_spaces()
         return self.code
 
+    def trim_comment(self):
+        self.remove_comments_and_docstrings()
+        return self.code
+
     def remove_comments_and_docstrings(self):
         out = ""
         prev_toktype = tokenize.INDENT
@@ -39,7 +43,7 @@ class CodeTrimmer:
             last_col = end_col
             last_lineno = end_line
         out = '\n'.join(l for l in out.splitlines() if l.strip())
-        self.code = out
+        return out
 
     def remove_white_spaces(self):
         self.code = re.sub(r"\s+", "", self.code)
