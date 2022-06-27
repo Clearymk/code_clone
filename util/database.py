@@ -16,8 +16,9 @@ class DataBase(object):
             self.__init__()
 
     def query_id_hash_value_from_jupyter(self):
+        #  where id > 5376729
         query_sql = "select id, hash_value " \
-                    "from jupyter_code_snippet where id > 5376729"
+                    "from jupyter_code_snippet"
         cursor = self.mysql.cursor()
         cursor.execute(query_sql)
         return cursor.fetchall()
@@ -170,6 +171,15 @@ class DataBase(object):
         cursor.execute(delete_sql, (jupyter_id,))
         cursor.close()
         print("delete clone pair by jupyter id = ", jupyter_id)
+        self.mysql.commit()
+
+    def delete_clone_pair_id(self, clone_id):
+        delete_sql = "delete from jupyter.clone_pair " \
+                     "where id = %s"
+        cursor = self.mysql.cursor()
+        cursor.execute(delete_sql, (clone_id,))
+        cursor.close()
+        print("delete clone pair by clone id = ", clone_id)
         self.mysql.commit()
 
     def delete_clone_pair_by_so_id(self, so_id):

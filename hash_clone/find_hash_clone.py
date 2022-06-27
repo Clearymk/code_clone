@@ -8,7 +8,7 @@ if __name__ == "__main__":
                 if len(db.query_by_sql("select * "
                                        "from clone_pair "
                                        "where clone_type = 1 "
-                                       "and jupyter_code_snippet_id=jupyter_code_snippet_id "
-                                       "and so_code_snippet_id = so_code_snippet_id")) == 0:
+                                       "and jupyter_code_snippet_id={} "
+                                       "and so_code_snippet_id ={} ".format(jupyter_id, so_id))) == 0:
                     db.insert_clone_pair(jupyter_id, so_id, 1)
     db.mysql.commit()
