@@ -53,7 +53,7 @@ def write_so_code_into_zip(so_zip_path):
 def writer_into_zip(file_range, zip_file_name, zip_path):
     if zip_file_name == "":
         print()
-    zip_file = os.path.join(zip_path, zip_file_name + ".zip")
+    zip_file = zip_path + "/" + zip_file_name + ".zip"
 
     count = 1
     while os.path.exists(zip_file):
@@ -72,5 +72,6 @@ if __name__ == "__main__":
     db = DataBase()
     zip_path = "/media/viewv/Data/jupyter_so/jupyter_zip"
     write_jupyter_code_into_zip(zip_path)
-    zip_path = "/media/viewv/Data/jupyter_so/so_zip"
-    write_so_code_into_zip(zip_path)
+    db.mysql.commit()
+    # zip_path = "/media/viewv/Data/jupyter_so/so_zip"
+    # write_so_code_into_zip(zip_path)

@@ -135,7 +135,8 @@ class DataBase(object):
 
         cursor = self.mysql.cursor()
         cursor.execute(query_sql, (jupyter_zip_path,))
-        return cursor.fetchone()
+        a = cursor.fetchone()
+        return a
 
     def query_so_id_by_zip_path(self, so_zip_path):
         query_sql = "select id " \
@@ -212,8 +213,8 @@ class DataBase(object):
     def commit(self, insert_info):
         self.count += 1
         # 当count大于阈值时提交
-        if self.count >= 1000:
+        if self.count >= 1:
             self.count = 0
             self.mysql.commit()
             print("success commit")
-        print("success info = " + str(insert_info))
+        # print("success info = " + str(insert_info))

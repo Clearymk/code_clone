@@ -2,7 +2,7 @@ import queue
 import threading
 from util.database import DataBase
 
-scc_result = "../res/split_result/split_a"
+scc_result = "../res/split_result/split_b"
 file_index = "../res/files-stats-0.stats"
 so_path = "/media/viewv/Data/jupyter_so/so_zip"
 jupyter_path = "/media/viewv/Data/jupyter_so/jupyter_zip"
@@ -58,6 +58,12 @@ class Parse(threading.Thread):
         elif dest_path.__contains__(jupyter_path):
             jupyter = 2
 
+        if src_path.__contains__("/jupyter_zip_old/"):
+            src_path = src_path.replace("/jupyter_zip_old/", "/jupyter_zip/")
+
+        if dest_path.__contains__("/jupyter_zip_old/"):
+            dest_path = dest_path.replace("/jupyter_zip_old/", "/jupyter_zip/")
+
         if so > 0 and jupyter > 0:
             try:
                 if so == 1:
@@ -103,7 +109,7 @@ def main():
     con_parse = 5
     init_file_index()
     print("finish loading file index")
-    for i in range(ord('a'), ord('z') + 1):
+    for i in range(ord('a'), ord('i') + 1):
         data_list = queue.Queue()
         data_list = read_clone_pairs(data_list, scc_result + chr(i))
         print("finish loading result pair " + scc_result + chr(i))
