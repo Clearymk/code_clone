@@ -4,11 +4,9 @@ import threading
 from util.database import DataBase
 
 log = "log.txt"
-file_index = "../res/files-stats-0.stats"
 so_path = "/media/viewv/Data/jupyter_so/so_zip"
 jupyter_path = "/media/viewv/Data/jupyter_so/jupyter_zip"
 fail_log = "fail_log.txt"
-file_dict = {}
 
 
 class Parse(threading.Thread):
@@ -42,10 +40,10 @@ class Parse(threading.Thread):
         print('退出%d号解析线程' % self.number)
 
     def parse(self, data):
-        clone_info = data.strip().split(",")
+        clone_info = data.strip().split(":")
         so = jupyter = -1
-        src_info = clone_info[0] + "," + clone_info[1]
-        src_path = file_dict[src_info]
+        src_path = clone_info[0]
+        dest_path = clone_info[1]
 
         if src_path.__contains__(so_path):
             so = 1
@@ -56,9 +54,6 @@ class Parse(threading.Thread):
                 jupyter_project_path = src_path.split("/")[6]
                 jupyter_project_path_ex = re.sub(r"_\d.zip", ".zip", jupyter_project_path)
                 src_path.replace(jupyter_project_path, jupyter_project_path_ex)
-
-        dest_info = clone_info[2] + "," + clone_info[3]
-        dest_path = file_dict[dest_info]
 
         if dest_path.__contains__(so_path):
             so = 2
@@ -95,19 +90,8 @@ def read_clone_pairs(data_list, output_file):
     return data_list
 
 
-def init_file_index():
-    with open(file_index, "r", encoding="utf8") as f:
-        for line in f:
-            file_info = line.strip().split(",")
-            file_id = file_info[0] + "," + file_info[1]
-            file_path = file_info[2]
-            file_dict[file_id] = file_path
-
-
 def main():
     con_parse = 5
-    init_file_index()
-    print("finish loading file index")
 
     data_list = queue.Queue()
     data_list = read_clone_pairs(data_list, log)
