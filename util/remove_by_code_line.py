@@ -32,7 +32,7 @@ while row is not None:
         jupyter_id = row[0]
         jupyter_code = row[1]
         trimmed_code = CodeTrimmer(jupyter_code).trim_comment()
-        if trimmed_code.count("\n") < 3:
+        if trimmed_code.count("\n") < 4:
             remove_jupyter(jupyter_id)
     except Exception as e:
         print(e)
@@ -47,7 +47,7 @@ while row is not None:
         so_id = row[0]
         so_code = row[1]
         trimmed_code = CodeTrimmer(so_code).trim_comment()
-        if so_code.count("\n") < 3:
+        if so_code.count("\n") < 4:
             remove_so(so_id)
     except Exception as e:
         print(e)
