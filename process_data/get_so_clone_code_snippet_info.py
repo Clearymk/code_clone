@@ -21,7 +21,7 @@ if __name__ == "__main__":
 
     for so_code_snippet_id in clone_db.query_by_sql("select distinct so_code_snippet_id "
                                                     "from clone_pair "
-                                                    "where clone_pair.so_code_snippet_id > 0 "
+                                                    "where clone_pair.so_code_snippet_id > 1863 "
                                                     "order by so_code_snippet_id;"):
         so_code_snippet_id = so_code_snippet_id[0]
         code, so_post_id = clone_db.query_by_sql("select code, so_post_id "
@@ -56,4 +56,4 @@ if __name__ == "__main__":
 
             clone_db.insert_clone_so_snippet_info(vote, create_date, so_code_snippet_id)
         else:
-            write_log(so_code_snippet_id)
+            write_log(so_code_snippet_id, "so_log.txt")
