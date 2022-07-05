@@ -3,14 +3,14 @@ import pymysql
 
 
 class DataBase(object):
-    def __init__(self) -> None:
+    def __init__(self, database="jupyter") -> None:
         self.count = 0
         try:
             self.mysql = pymysql.connect(host='10.19.126.71',
                                          port=3307,
                                          user='root',
                                          password='catlab1a509',
-                                         database='jupyter')
+                                         database=database)
         except Exception:
             time.sleep(2)
             self.__init__()
@@ -105,6 +105,14 @@ class DataBase(object):
         cursor.execute(insert_sql, (sha, author, commit_date, jupyter_id))
         cursor.close()
         self.commit(str(sha) + " " + str(commit_date))
+
+    def insert_clone_so_snippet_info(self, vote, create_date, so_id):
+        insert_sql = "INSERT INTO clone_so_snippet_info (vote, create_date, so_id) " \
+                     "VALUES (%s, %s, %s)"
+        cursor = self.mysql.cursor()
+        cursor.execute(insert_sql, (vote, create_date, so_id))
+        cursor.close()
+        self.commit(str(so_id) + " " + str(create_date))
 
     def query_so_id_from_so_group_by_post_id(self):
         query_sql = "select so_post_id " \
