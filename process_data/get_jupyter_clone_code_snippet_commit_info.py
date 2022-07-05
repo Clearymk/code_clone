@@ -1,12 +1,9 @@
-from util.database import DataBase
-from find_matched_commit import get_matched_commit
+import time
 import os
 
-
-def write_log(log):
-    with open("log.txt", "a+") as f:
-        f.write(str(log) + "\n")
-
+from util.database import DataBase
+from find_matched_commit import get_matched_commit
+from util.write_log import write_log
 
 if __name__ == "__main__":
     os.environ['http_proxy'] = "http://localhost:7890"
@@ -17,7 +14,7 @@ if __name__ == "__main__":
     db = DataBase()
     for jupyter_code_snippet_id in db.query_by_sql("select distinct jupyter_code_snippet_id "
                                                    "from clone_pair "
-                                                   "where jupyter_code_snippet_id > 1 "
+                                                   "where jupyter_code_snippet_id > 4886 "
                                                    "order by jupyter_code_snippet_id;"):
         code, jupyter_path = db.query_by_sql("select code, jupyter_path "
                                              "from jupyter_code_snippet "
@@ -28,12 +25,18 @@ if __name__ == "__main__":
         repo = repo.replace("\\", "/")
         file_path = file_path.replace("\\", "/")
 
-        commit = get_matched_commit(code, repo, file_path)
+        try:
+            commit = get_matched_commit(code, repo, file_path)
+        except Exception as e:
+            time.sleep(5)
+            write_log(jupyter_code_snippet_id[0])
+            continue
 
         if commit:
             try:
                 author = "" if not commit.author else commit.author.url
-                db.insert_clone_jupyter_snippet_commit(commit.sha, author, commit.last_modified)
+                db.insert_clone_jupyter_snippet_commit(commit.sha, author, commit.last_modified,
+                                                       jupyter_code_snippet_id[0])
                 print(jupyter_code_snippet_id[0])
             except Exception as e:
                 print(e)
