@@ -58,7 +58,20 @@ class Parse(threading.Thread):
         elif dest_path.__contains__(jupyter_path):
             jupyter = 2
 
+        if src_path.__contains__("/jupyter_zip_old/"):
+            src_path = src_path.replace("/jupyter_zip_old/", "/jupyter_zip/")
+
+        if dest_path.__contains__("/jupyter_zip_old/"):
+            dest_path = dest_path.replace("/jupyter_zip_old/", "/jupyter_zip/")
+
+        if src_path.__contains__("/so_zip_old/"):
+            src_path = src_path.replace("/so_zip_old/", "/so_zip/")
+
+        if dest_path.__contains__("/so_zip_old/"):
+            dest_path = dest_path.replace("/so_zip_old/", "/so_zip/")
+
         if so > 0 and jupyter > 0:
+            so_id = -1
             try:
                 if so == 1:
                     so_id = self.db.query_so_id_by_zip_path(src_path[1:-1])[0]
@@ -67,7 +80,7 @@ class Parse(threading.Thread):
                     so_id = self.db.query_so_id_by_zip_path(dest_path[1:-1])[0]
                     jupyter_id = self.db.query_jupyter_id_by_zip_path(src_path[1:-1])[0]
             except Exception as e:
-                if so_id is None:
+                if so_id == -1:
                     print(e, src_path, dest_path, "so is none")
                     with open("log.txt", "a+", encoding="utf8") as f:
                         f.write(src_path + ":" + dest_path + ":so" + "\n")
@@ -118,6 +131,8 @@ def main():
         for t in parse_thread:
             t.join()
 
+        with open("progress_a.txt", "a+", encoding="utf8") as f:
+            f.write(chr(i) + '\n')
 
 if __name__ == '__main__':
     main()
