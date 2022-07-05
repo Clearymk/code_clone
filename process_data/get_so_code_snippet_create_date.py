@@ -1,7 +1,7 @@
 import json
 import requests
 import fake_headers
-from util.proxy import init
+from util.proxy import init_proxy
 from bs4 import BeautifulSoup
 
 
@@ -49,7 +49,7 @@ def get_code_create_date(post_id, target_code):
 
 
 if __name__ == "__main__":
-    init()
+    init_proxy()
     get_post_vote(40146128)
 #     print(get_code_create_date(46908, '''Map<String, String> map = ...
 # for (Map.Entry<String, String> entry : map.entrySet())

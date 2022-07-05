@@ -2,7 +2,7 @@ from util.database import DataBase
 from util.write_log import write_log
 from get_so_code_snippet_create_date import get_code_create_date, get_post_vote
 from bs4 import BeautifulSoup
-from util.proxy import init
+from util.proxy import init_proxy
 
 
 def is_contain_match_code(body, target_code):
@@ -15,15 +15,14 @@ def is_contain_match_code(body, target_code):
 
 
 if __name__ == "__main__":
-    init()
+    init_proxy()
     clone_db = DataBase()
     so_db = DataBase("apks")
 
     for so_code_snippet_id in clone_db.query_by_sql("select distinct so_code_snippet_id "
                                                     "from clone_pair "
                                                     "where clone_pair.so_code_snippet_id > 0 "
-                                                    "order by so_code_snippet_id "
-                                                    "limit 10;"):
+                                                    "order by so_code_snippet_id;"):
         so_code_snippet_id = so_code_snippet_id[0]
         code, so_post_id = clone_db.query_by_sql("select code, so_post_id "
                                                  "from so_code_snippet "
