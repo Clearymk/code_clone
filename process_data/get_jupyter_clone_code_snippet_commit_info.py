@@ -5,7 +5,7 @@ import os
 
 def write_log(log):
     with open("log.txt", "a+") as f:
-        f.write(str(log))
+        f.write(str(log) + "\n")
 
 
 if __name__ == "__main__":
@@ -17,7 +17,8 @@ if __name__ == "__main__":
     db = DataBase()
     for jupyter_code_snippet_id in db.query_by_sql("select distinct jupyter_code_snippet_id "
                                                    "from clone_pair "
-                                                   "where jupyter_code_snippet_id > 1;"):
+                                                   "where jupyter_code_snippet_id > 1 "
+                                                   "order by jupyter_code_snippet_id;"):
         code, jupyter_path = db.query_by_sql("select code, jupyter_path "
                                              "from jupyter_code_snippet "
                                              "where id = {};".format(jupyter_code_snippet_id[0]))[0]
