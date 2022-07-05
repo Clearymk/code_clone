@@ -98,6 +98,14 @@ class DataBase(object):
         cursor.close()
         self.commit(str(jupyter_code_snippet_id) + " " + str(so_code_snippet_id))
 
+    def insert_clone_jupyter_snippet_commit(self, sha, author, commit_date):
+        insert_sql = "INSERT INTO clone_jupyter_snippet_commit (sha, author, commit_date) " \
+                     "VALUES (%s, %s, %s)"
+        cursor = self.mysql.cursor()
+        cursor.execute(insert_sql, (sha, author, commit_date))
+        cursor.close()
+        self.commit(str(sha) + " " + str(commit_date))
+
     def query_so_id_from_so_group_by_post_id(self):
         query_sql = "select so_post_id " \
                     "from so_code_snippet " \
@@ -217,4 +225,4 @@ class DataBase(object):
             self.count = 0
             self.mysql.commit()
             print("success commit")
-        # print("success info = " + str(insert_info))
+        # print("success info = " + str(insert_info)
