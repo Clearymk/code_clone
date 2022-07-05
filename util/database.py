@@ -225,4 +225,4 @@ class DataBase(object):
             self.count = 0
             self.mysql.commit()
             print("success commit")
-        # print("success info = " + str(insert_info)
+        print("success info = " + str(insert_info))
