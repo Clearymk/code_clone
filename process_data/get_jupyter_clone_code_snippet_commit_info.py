@@ -14,7 +14,7 @@ if __name__ == "__main__":
     db = DataBase()
     for jupyter_code_snippet_id in db.query_by_sql("select distinct jupyter_code_snippet_id "
                                                    "from clone_pair "
-                                                   "where jupyter_code_snippet_id > 49137 "
+                                                   "where jupyter_code_snippet_id > 383855 "
                                                    "order by jupyter_code_snippet_id;"):
         jupyter_code_snippet_id = jupyter_code_snippet_id[0]
         code, jupyter_path = db.query_by_sql("select code, jupyter_path "

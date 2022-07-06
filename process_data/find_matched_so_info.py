@@ -29,7 +29,7 @@ def get_post_vote(question_id, answer_id=0):
 
 def get_reversion():
     defaultWrapper = '.backoff;.error_id;.error_message;.error_name;.has_more;.items;.quota_max;.quota_remaining;'
-    includes = 'revision.body'
+    includes = 'revision.body;revision.creation_date'
 
     SITE = StackAPI('stackoverflow')
     # See https://stackapi.readthedocs.io/en/latest/user/advanced.html#end-points-that-don-t-accept-site-parameter
@@ -39,16 +39,16 @@ def get_reversion():
 
 
 def get_code_create_date(post_id, target_code):
-    header = fake_headers.Headers().generate()
-    url = "https://api.stackexchange.com/2.3/posts/{}/revisions?site=stackoverflow&filter=!nKzQUQx*Kx"
+    # header = fake_headers.Headers().generate()
+    url = "https://api.stackexchange.com/2.3/posts/{}/revisions?site=stackoverflow&filter=!.*3SJBncaiud"
 
-    response = requests.get(url.format(post_id), header)
+    response = requests.get(url.format(post_id))
     response = json.loads(response.content)
 
     create_time = None
     matched = False
 
-    for revision in response['items']:
+    for revision in reversed(response['items']):
         revision_body = revision['body']
         bs = BeautifulSoup(revision_body, "lxml")
         for code in bs.find_all("code"):
@@ -64,7 +64,8 @@ if __name__ == "__main__":
     init_proxy()
     # get_reversion()
     target_code = ""
-    print(get_code_create_date(49566213, CodeTrimmer(target_code).remove_white_spaces()))
+    get_reversion()
+    # print(get_code_create_date(49566213, CodeTrimmer(target_code).remove_white_spaces()))
     # get_post_vote(49566213)
 #     print(get_code_create_date(46908, '''Map<String, String> map = ...
 # for (Map.Entry<String, String> entry : map.entrySet())
