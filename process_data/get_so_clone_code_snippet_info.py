@@ -1,3 +1,5 @@
+import time
+
 from util.database import DataBase
 from util.write_log import write_log
 from get_so_code_snippet_create_date import get_code_create_date, get_post_vote
@@ -21,7 +23,7 @@ if __name__ == "__main__":
 
     for so_code_snippet_id in clone_db.query_by_sql("select distinct so_code_snippet_id "
                                                     "from clone_pair "
-                                                    "where clone_pair.so_code_snippet_id > 1863 "
+                                                    "where clone_pair.so_code_snippet_id > 383245 "
                                                     "order by so_code_snippet_id;"):
         so_code_snippet_id = so_code_snippet_id[0]
         code, so_post_id = clone_db.query_by_sql("select code, so_post_id "
@@ -48,12 +50,17 @@ if __name__ == "__main__":
                     break
 
         if target_id:
-            create_date = get_code_create_date(target_id, code)
-            if is_question:
-                vote = get_post_vote(target_id)
-            else:
-                vote = get_post_vote(question_id, target_id)
+            try:
+                create_date = get_code_create_date(target_id, code)
+                if is_question:
+                    vote = get_post_vote(target_id)
+                else:
+                    vote = get_post_vote(question_id, target_id)
 
-            clone_db.insert_clone_so_snippet_info(vote, create_date, so_code_snippet_id)
+                clone_db.insert_clone_so_snippet_info(vote, create_date, so_code_snippet_id)
+            except Exception as e:
+                print(e)
+                write_log(so_code_snippet_id, "so_log.txt")
+                time.sleep(5)
         else:
             write_log(so_code_snippet_id, "so_log.txt")
