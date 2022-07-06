@@ -3,6 +3,7 @@ from util.write_log import write_log
 from get_so_code_snippet_create_date import get_code_create_date, get_post_vote
 from bs4 import BeautifulSoup
 from util.proxy import init_proxy
+from util.code_trimmer import CodeTrimmer
 
 
 def is_contain_match_code(body, target_code):
@@ -48,7 +49,7 @@ if __name__ == "__main__":
                     break
 
         if target_id:
-            create_date = get_code_create_date(target_id, code)
+            create_date = get_code_create_date(target_id, CodeTrimmer(code).remove_white_spaces())
             if is_question:
                 vote = get_post_vote(target_id)
             else:
