@@ -2,23 +2,21 @@ import time
 
 from util.database import DataBase
 from util.write_log import write_log
-from find_matched_so_info import get_code_create_date, get_post_vote
+from find_matched_so_info import get_code_create_date, get_post_info
 from bs4 import BeautifulSoup
-from util.proxy import init_proxy
 from util.code_trimmer import CodeTrimmer
 import requests
 
 controller = "http://127.0.0.1:2390/proxies/"
-proxy_url = controller + "%F0%9F%9A%80%20%E8%8A%82%E7%82%B9%E9%80%89%E6%8B%A9"
+proxy_url = controller + "%E2%9C%88%EF%B8%8F%20%E6%89%8B%E5%8A%A8%E9%80%89%E6%8B%A9"
 
-proxy_group = [
-    '台湾 TW 01', '台湾 TW 02', '台湾 TW 03', '台湾 TW 04', '台湾 TW 05', '台湾 TW 06', '台湾 TW 07', '台湾 TW 08',
-    '新加坡 SG 01', '新加坡 SG 02', '新加坡 SG 03', '新加坡 SG 04', '新加坡 SG 05', '新加坡 SG 06', '新加坡 SG 07', '新加坡 SG 08',
-    '日本 JP 01', '日本 JP 02', '日本 JP 03', '日本 JP 04', '日本 JP 05', '日本 JP 06', '日本 JP 07', '日本 JP 08',
-    '韩国 KR 01', '韩国 KR 02', '韩国 KR 03', '韩国 KR 04', '韩国 KR 05', '韩国 KR 06', '韩国 KR 07', '韩国 KR 08',
-    '香港 HK 01', '香港 HK 02', '香港 HK 03', '香港 HK 04', '香港 HK 05', '香港 HK 06', '香港 HK 07', '香港 HK 08', '香港 HK 09',
-    '香港 HK 10'
-]
+proxy_group = ["台湾 TW 01", "台湾 TW 02", "台湾 TW 03", "台湾 TW 04", "台湾 TW 05", "台湾 TW 06", "台湾 TW 07", "台湾 TW 08",
+               "新加坡 SG 01", "新加坡 SG 02", "新加坡 SG 03", "新加坡 SG 04", "新加坡 SG 05", "新加坡 SG 06", "新加坡 SG 07", "新加坡 SG 08",
+               "日本 JP 01", "日本 JP 02", "日本 JP 03", "日本 JP 04", "日本 JP 05", "日本 JP 06", "日本 JP 07", "日本 JP 08",
+               "美国 US 01", "美国 US 02", "美国 US 03", "美国 US 04", "美国 US 05", "美国 US 06", "美国 US 07", "美国 US 08",
+               "韩国 KR 01", "韩国 KR 02", "韩国 KR 03", "韩国 KR 04", "韩国 KR 05", "韩国 KR 06", "韩国 KR 07", "韩国 KR 08",
+               "香港 HK 01", "香港 HK 02", "香港 HK 03", "香港 HK 04", "香港 HK 05", "香港 HK 06", "香港 HK 07", "香港 HK 08",
+               "香港 HK 09", "香港 HK 10"]
 
 
 def change_proxy(current_cid):
@@ -40,17 +38,17 @@ def is_contain_match_code(body, target_code):
 
 
 if __name__ == "__main__":
-    init_proxy()
+    # init_proxy()
     clone_db = DataBase()
     so_db = DataBase("apks")
     exception_count = 0
-    current_cid = -1
+    current_cid = 0
 
     for so_code_snippet_id in clone_db.query_by_sql("select distinct so_code_snippet_id "
                                                     "from clone_pair "
-                                                    "where clone_pair.so_code_snippet_id > 821286 "
+                                                    "where clone_pair.so_code_snippet_id > 1075478 "
                                                     "order by so_code_snippet_id;"):
-        if exception_count >= 5:
+        if exception_count >= 10:
             exception_count = 0
             current_cid = change_proxy(current_cid)
 
@@ -83,12 +81,11 @@ if __name__ == "__main__":
                 create_date = get_code_create_date(target_id, CodeTrimmer(code).remove_white_spaces())
                 time.sleep(1)
                 if is_question:
-                    vote, is_accept = get_post_vote(target_id)
+                    vote, is_accept = get_post_info(target_id)
                 else:
-                    vote, is_accept = get_post_vote(question_id, target_id)
+                    vote, is_accept = get_post_info(question_id, target_id)
 
-                clone_db.insert_clone_so_snippet_info(vote, create_date, so_code_snippet_id)
-                time.sleep(1)
+                clone_db.insert_clone_so_snippet_info(vote, create_date, so_code_snippet_id, is_accept)
             except Exception as e:
                 exception_count += 1
                 print(e)
