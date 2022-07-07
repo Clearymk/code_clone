@@ -106,11 +106,11 @@ class DataBase(object):
         cursor.close()
         self.commit(str(sha) + " " + str(commit_date))
 
-    def insert_clone_so_snippet_info(self, vote, create_date, so_id):
-        insert_sql = "INSERT INTO clone_so_snippet_info (vote, create_date, so_id) " \
-                     "VALUES (%s, %s, %s)"
+    def insert_clone_so_snippet_info(self, vote, create_date, so_id, is_accepted):
+        insert_sql = "INSERT INTO clone_so_snippet_info (vote, create_date, so_id, is_accepted) " \
+                     "VALUES (%s, %s, %s, %s)"
         cursor = self.mysql.cursor()
-        cursor.execute(insert_sql, (vote, create_date, so_id))
+        cursor.execute(insert_sql, (vote, create_date, so_id, is_accepted))
         cursor.close()
         self.commit(str(so_id) + " " + str(create_date))
 

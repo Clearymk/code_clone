@@ -11,21 +11,25 @@ from util.code_trimmer import CodeTrimmer
 def get_post_vote(question_id, answer_id=0):
     header = {"Authorization": "Z(EFj1dgBqrwlWCZxhdOnA))"}
     score = 0
+    is_accept = False
+
     if answer_id == 0:
         url = "https://api.stackexchange.com/2.3/posts/{}?site=stackoverflow"
         response = requests.get(url.format(question_id), header)
         response = json.loads(response.content)
         score = response['items'][0]['score']
     else:
-        url = "https://api.stackexchange.com/2.3/questions/{}/answers?site=stackoverflow".format(question_id)
+        url = "https://api.stackexchange.com/2.3/questions/{}/answers?site=stackoverflow&filter=!AH)b6zn0glPY".format(
+            question_id)
         response = requests.get(url.format(question_id), header)
         response = json.loads(response.content)
         for answer in response['items']:
             if answer['answer_id'] == answer_id:
-                score = response['items'][0]['score']
+                score = answer['score']
+                is_accept = True
                 break
     print(response.status_code)
-    return score
+    return score, is_accept
 
 
 def get_reversion():
@@ -67,7 +71,8 @@ if __name__ == "__main__":
     init_proxy()
     # get_reversion()
     target_code = ""
-    get_reversion()
+    get_answer_accept(342)
+    # get_reversion()
     # print(get_code_create_date(49566213, CodeTrimmer(target_code).remove_white_spaces()))
     # get_post_vote(49566213)
 #     print(get_code_create_date(46908, '''Map<String, String> map = ...

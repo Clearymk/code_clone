@@ -83,9 +83,9 @@ if __name__ == "__main__":
                 create_date = get_code_create_date(target_id, CodeTrimmer(code).remove_white_spaces())
                 time.sleep(1)
                 if is_question:
-                    vote = get_post_vote(target_id)
+                    vote, is_accept = get_post_vote(target_id)
                 else:
-                    vote = get_post_vote(question_id, target_id)
+                    vote, is_accept = get_post_vote(question_id, target_id)
 
                 clone_db.insert_clone_so_snippet_info(vote, create_date, so_code_snippet_id)
                 time.sleep(1)
