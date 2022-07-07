@@ -13,12 +13,12 @@ def get_post_info(question_id, answer_id=0):
     is_accept = False
 
     if answer_id == 0:
-        url = "https://api.stackexchange.com/2.3/posts/{}?site=stackoverflow&access_token=Z(EFj1dgBqrwlWCZxhdOnA))"
+        url = "https://api.stackexchange.com/2.3/posts/{}?site=stackoverflow&&key=qR4a8jenSu3ndJDZEqlAlg(("
         response = requests.get(url.format(question_id))
         response = json.loads(response.content)
         score = response['items'][0]['score']
     else:
-        url = "https://api.stackexchange.com/2.3/questions/{}/answers?site=stackoverflow&filter=!AH)b6zn0glPY&access_token=Z(EFj1dgBqrwlWCZxhdOnA))".format(
+        url = "https://api.stackexchange.com/2.3/questions/{}/answers?site=stackoverflow&filter=!AH)b6zn0glPY&key=qR4a8jenSu3ndJDZEqlAlg((".format(
             question_id)
         response = requests.get(url.format(question_id))
         response = json.loads(response.content)
@@ -44,7 +44,7 @@ def get_reversion():
 
 def get_code_create_date(post_id, target_code):
     # header = fake_headers.Headers().generate()
-    url = "https://api.stackexchange.com/2.3/posts/{}/revisions?site=stackoverflow&filter=!.*3SJBncaiud&access_token=Z(EFj1dgBqrwlWCZxhdOnA))"
+    url = "https://api.stackexchange.com/2.3/posts/{}/revisions?site=stackoverflow&filter=!.*3SJBncaiud&key=qR4a8jenSu3ndJDZEqlAlg(("
 
     response = requests.get(url.format(post_id))
     response = json.loads(response.content)
