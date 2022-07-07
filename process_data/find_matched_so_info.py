@@ -9,7 +9,7 @@ from util.code_trimmer import CodeTrimmer
 
 
 def get_post_vote(question_id, answer_id=0):
-    header = fake_headers.Headers().generate()
+    header = {"Authorization": "Z(EFj1dgBqrwlWCZxhdOnA))"}
     score = 0
     if answer_id == 0:
         url = "https://api.stackexchange.com/2.3/posts/{}?site=stackoverflow"
@@ -24,6 +24,7 @@ def get_post_vote(question_id, answer_id=0):
             if answer['answer_id'] == answer_id:
                 score = response['items'][0]['score']
                 break
+    print(response.status_code)
     return score
 
 
@@ -40,9 +41,11 @@ def get_reversion():
 
 def get_code_create_date(post_id, target_code):
     # header = fake_headers.Headers().generate()
+    header = {"Authorization": "Z(EFj1dgBqrwlWCZxhdOnA))"}
     url = "https://api.stackexchange.com/2.3/posts/{}/revisions?site=stackoverflow&filter=!.*3SJBncaiud"
 
-    response = requests.get(url.format(post_id))
+    response = requests.get(url.format(post_id), header)
+    print(response.status_code)
     response = json.loads(response.content)
 
     create_time = None

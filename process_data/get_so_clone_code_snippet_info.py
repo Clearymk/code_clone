@@ -1,3 +1,5 @@
+import time
+
 from util.database import DataBase
 from util.write_log import write_log
 from find_matched_so_info import get_code_create_date, get_post_vote
@@ -22,7 +24,7 @@ if __name__ == "__main__":
 
     for so_code_snippet_id in clone_db.query_by_sql("select distinct so_code_snippet_id "
                                                     "from clone_pair "
-                                                    "where clone_pair.so_code_snippet_id > 383855 "
+                                                    "where clone_pair.so_code_snippet_id > 821286 "
                                                     "order by so_code_snippet_id;"):
         so_code_snippet_id = so_code_snippet_id[0]
         code, so_post_id = clone_db.query_by_sql("select code, so_post_id "
@@ -51,14 +53,17 @@ if __name__ == "__main__":
         if target_id:
             try:
                 create_date = get_code_create_date(target_id, CodeTrimmer(code).remove_white_spaces())
+                time.sleep(1)
                 if is_question:
                     vote = get_post_vote(target_id)
                 else:
                     vote = get_post_vote(question_id, target_id)
 
                 clone_db.insert_clone_so_snippet_info(vote, create_date, so_code_snippet_id)
+                time.sleep(1)
             except Exception as e:
                 print(e)
+                time.sleep(1)
                 write_log(so_code_snippet_id, "so_log.txt")
         else:
             write_log(so_code_snippet_id, "so_log.txt")
