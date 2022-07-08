@@ -98,11 +98,11 @@ class DataBase(object):
         cursor.close()
         self.commit(str(jupyter_code_snippet_id) + " " + str(so_code_snippet_id))
 
-    def insert_clone_jupyter_snippet_commit(self, sha, author, commit_date, jupyter_id):
-        insert_sql = "INSERT INTO clone_jupyter_snippet_commit (sha, author, commit_date, jupyter_id) " \
-                     "VALUES (%s, %s, %s, %s)"
+    def insert_clone_jupyter_snippet_commit(self, sha, author, commit_date, experience, jupyter_id):
+        insert_sql = "INSERT INTO clone_jupyter_snippet_commit (sha, author, commit_date, experience, jupyter_id) " \
+                     "VALUES (%s, %s, %s, %s, %s)"
         cursor = self.mysql.cursor()
-        cursor.execute(insert_sql, (sha, author, commit_date, jupyter_id))
+        cursor.execute(insert_sql, (sha, author, commit_date, experience, jupyter_id))
         cursor.close()
         self.commit(str(sha) + " " + str(commit_date))
 

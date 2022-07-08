@@ -27,20 +27,12 @@ if __name__ == "__main__":
         file_path = file_path.replace("\\", "/")
 
         try:
-            commit = get_matched_commit(code, repo, file_path)
+            sha, author, last_modified, experience = get_matched_commit(code, repo, file_path)
+            author = "" if not author else author.url
+            db.insert_clone_jupyter_snippet_commit(sha, author, last_modified, experience,
+                                                   jupyter_code_snippet_id)
+            print(jupyter_code_snippet_id)
         except Exception as e:
             time.sleep(5)
             write_log(jupyter_code_snippet_id)
             continue
-
-        if commit:
-            try:
-                author = "" if not commit.author else commit.author.url
-                db.insert_clone_jupyter_snippet_commit(commit.sha, author, commit.last_modified,
-                                                       jupyter_code_snippet_id)
-                print(jupyter_code_snippet_id)
-            except Exception as e:
-                print(e)
-                write_log(jupyter_code_snippet_id)
-        else:
-            write_log(jupyter_code_snippet_id)
