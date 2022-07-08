@@ -25,8 +25,8 @@ def flatten(list_of_lists):
     return list_of_lists[:1] + flatten(list_of_lists[1:])
 
 
-def get_matched_commit(search_code, project, target_file):
-    git = Github("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")
+def get_matched_commit(search_code, project, target_file, token):
+    git = Github(token)
     repo = git.get_repo(project)
 
     commits = list(repo.get_commits())

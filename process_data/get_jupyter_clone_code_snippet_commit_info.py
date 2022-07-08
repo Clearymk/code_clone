@@ -1,5 +1,5 @@
 import time
-import os
+from util.proxy import init_proxy
 
 from util.database import DataBase
 from find_matched_commit import get_matched_commit
@@ -12,9 +12,10 @@ if __name__ == "__main__":
     os.environ['HTTPS_PROXY'] = "http://localhost:7890"
 
     db = DataBase()
+    # without experience 850779
     for jupyter_code_snippet_id in db.query_by_sql("select distinct jupyter_code_snippet_id "
                                                    "from clone_pair "
-                                                   "where jupyter_code_snippet_id > 383855 "
+                                                   "where jupyter_code_snippet_id > 850779 "
                                                    "order by jupyter_code_snippet_id;"):
         jupyter_code_snippet_id = jupyter_code_snippet_id[0]
         code, jupyter_path = db.query_by_sql("select code, jupyter_path "
@@ -27,7 +28,7 @@ if __name__ == "__main__":
         file_path = file_path.replace("\\", "/")
 
         try:
-            sha, author, last_modified, experience = get_matched_commit(code, repo, file_path)
+            sha, author, last_modified, experience = get_matched_commit(code, repo, file_path, token)
             author = "" if not author else author.url
             db.insert_clone_jupyter_snippet_commit(sha, author, last_modified, experience,
                                                    jupyter_code_snippet_id)
