@@ -62,7 +62,13 @@ if __name__ == "__main__":
                 author = "" if not author else author.name
                 db.insert_clone_jupyter_snippet_commit(sha, author, last_modified, experience,
                                                        jupyter_code_snippet_id)
+                print(file_path)
             except Exception as e:
                 print(e)
         # 删除下载的repo
-        shutil.rmtree(download_path, onerror=handle_remove_read_only)
+        try:
+            if os.path.exists(download_path):
+                shutil.rmtree(download_path, onerror=handle_remove_read_only)
+        except Exception as e:
+            print(e)
+            pass
