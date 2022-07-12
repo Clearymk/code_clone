@@ -1,3 +1,6 @@
+import io
+
+import git
 from github import Github
 from nbformat import reads, NO_CONVERT
 from util.write_log import write_log
@@ -25,6 +28,49 @@ def flatten(list_of_lists):
     return list_of_lists[:1] + flatten(list_of_lists[1:])
 
 
+def get_matched_commit_from_local(search_code, project, target_file):
+    repo = git.Repo(project)
+
+    matched_commit = None
+    matched_author = None
+    experience = 0
+    authors = dict()
+    commit_count = 0
+
+    commits = list(repo.iter_commits())
+    if len(commits) == 1:
+        matched_commit = commits[0]
+        experience = 1
+        return matched_commit.hexsha, matched_commit.author, matched_commit.committed_date, experience
+
+    matched = False
+    for commit in commits:
+        if matched:
+            break
+
+        commit_count += 1
+
+        if commit.author in authors:
+            authors[commit.author] += 1
+        else:
+            authors[commit.author] = 1
+
+        file_content = io.BytesIO((commit.tree / target_file).data_stream.read()).read().decode("utf-8")
+        for code_cell in extract_code_cells(file_content):
+            if code_cell == search_code:
+                matched = True
+                matched_commit = commit
+                matched_author = matched_commit.author
+
+                if matched_author:
+                    experience = authors[matched_author] / commit_count
+                else:
+                    experience = 0
+                    write_log(project + ":" + target_file + ":" + matched_commit.sha + ":" + "author not found")
+                break
+    return matched_commit.hexsha, matched_author, matched_commit.committed_datetime, experience
+
+
 def get_matched_commit(search_code, project, target_file):
     git = Github("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")
     repo = git.get_repo(project)
@@ -32,7 +78,7 @@ def get_matched_commit(search_code, project, target_file):
     commits = list(repo.get_commits())
     matched_commit = None
     experience = 0
-    authors = {"NotFound": 0}
+    authors = dict()
     matched_author = None
     commit_count = 0
 

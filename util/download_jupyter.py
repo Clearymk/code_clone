@@ -2,7 +2,6 @@ import os.path
 import re
 import pymysql
 import time
-import subprocess
 import shutil
 import stat
 import errno
@@ -76,6 +75,33 @@ def remove_empty_folders(path, remove_root=True):
     files = os.listdir(path)
     if len(files) == 0 and remove_root:
         os.rmdir(path)
+
+
+def download_repo(owner, name, download_path):
+    os.system("git config --global http.https://github.com.proxy http://127.0.0.1:7890")
+    os.system("git config --global https.https://github.com.proxy https://127.0.0.1:7890")
+    save_name = owner + "_" + name
+
+    print("downloading " + save_name)
+    save_path = download_path
+
+    try:
+        if os.path.exists(save_path):
+            shutil.rmtree(save_path, onerror=handle_remove_read_only)
+            time.sleep(1)
+
+        os.mkdir(save_path)
+        # os.system(
+        #     "cd " + save_path + "&& git config --global core.protectNTFS false")
+        # TODO new token
+        Repo.clone_from("https://TOKEN@github.com/%s/%s" % (owner, name),
+                        save_path)
+
+        print("download " + save_name + " finished")
+    except Exception as e:
+        print(e)
+        with open("log_jupyter.txt", "a") as f:
+            f.write("exception when downloading " + save_name + "\n")
 
 
 if __name__ == "__main__":
