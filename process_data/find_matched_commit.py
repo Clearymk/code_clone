@@ -71,8 +71,8 @@ def get_matched_commit_from_local(search_code, project, target_file):
     return matched_commit.hexsha, matched_author, matched_commit.committed_datetime, experience
 
 
-def get_matched_commit(search_code, project, target_file):
-    git = Github("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")
+def get_matched_commit(search_code, project, target_file, token):
+    git = Github(token)
     repo = git.get_repo(project)
 
     commits = list(repo.get_commits())
