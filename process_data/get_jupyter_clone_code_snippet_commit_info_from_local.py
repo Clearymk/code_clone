@@ -5,7 +5,6 @@ import errno
 from util.download_jupyter import download_repo
 from util.database import DataBase
 from find_matched_commit import get_matched_commit_from_local
-from queue import Queue
 
 
 def handle_remove_read_only(func, path, exc):
@@ -38,21 +37,21 @@ if __name__ == "__main__":
         # 查找相同项目的code snippet
         repo_path_info = jupyter_path.split("\\")[0]
         owner, repo_name = repo_path_info[:repo_path_info.find("_")], repo_path_info[repo_path_info.find("_") + 1:]
-        project_task = Queue()
+        project_task = {jupyter_code_snippet_id}
         for jupyter_id in db.query_by_sql("select distinct id "
                                           "from jupyter_code_snippet "
-                                          "where id in (select jupyter_id from clone_jupyter_snippet_commit) "
+                                          "where id not in (select jupyter_id from clone_jupyter_snippet_commit) "
                                           "and jupyter_path like '{}%'".format(owner + "_" + repo_name)):
-            project_task.put(jupyter_id[0])
+            project_task.add(jupyter_id[0])
         # clone repo
         try:
             download_path = os.path.join("/media/viewv/Data/jupyter", owner + "_" + repo_name)
-            download_repo(owner, repo_name, download_path, "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")
+            download_repo(owner, repo_name, download_path, "")
         except Exception as e:
             print(e)
             continue
 
-        for jupyter_id in project_task.queue:
+        for jupyter_id in project_task:
             code, jupyter_path = db.query_by_sql("select code, jupyter_path "
                                                  "from jupyter_code_snippet "
                                                  "where id = {};".format(jupyter_id))[0]
