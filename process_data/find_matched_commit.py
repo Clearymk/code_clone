@@ -44,7 +44,7 @@ def get_matched_commit_from_local(search_code, project, target_file):
         return matched_commit.hexsha, matched_commit.author, matched_commit.committed_date, experience
 
     matched = False
-    for commit in commits:
+    for commit in reversed(commits):
         if matched:
             break
 
@@ -55,7 +55,11 @@ def get_matched_commit_from_local(search_code, project, target_file):
         else:
             authors[commit.author] = 1
 
-        file_content = io.BytesIO((commit.tree / target_file).data_stream.read()).read().decode("utf-8")
+        try:
+            file_content = io.BytesIO((commit.tree / target_file).data_stream.read()).read().decode("utf-8")
+        except KeyError as e:
+            continue
+
         for code_cell in extract_code_cells(file_content):
             if code_cell == search_code:
                 matched = True
@@ -68,7 +72,10 @@ def get_matched_commit_from_local(search_code, project, target_file):
                     experience = 0
                     write_log(project + ":" + target_file + ":" + matched_commit.sha + ":" + "author not found")
                 break
-    return matched_commit.hexsha, matched_author, matched_commit.committed_datetime, experience
+    if matched_commit:
+        return matched_commit.hexsha, matched_commit.author, matched_commit.committed_datetime, experience
+    else:
+        return "", "", "", 0
 
 
 def get_matched_commit(search_code, project, target_file, token):

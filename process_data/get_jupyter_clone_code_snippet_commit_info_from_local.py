@@ -19,13 +19,14 @@ def handle_remove_read_only(func, path, exc):
 if __name__ == "__main__":
     db = DataBase()
     processed_jupyter_id = set()
+    low, high, token = input().split()
 
     for jupyter_code_snippet_id in db.query_by_sql("select distinct jupyter_code_snippet_id "
                                                    "from clone_pair "
                                                    "where jupyter_code_snippet_id not in "
                                                    "(select jupyter_id from clone_jupyter_snippet_commit) "
-                                                   "and jupyter_code_snippet_id > 1000000 "
-                                                   "and jupyter_code_snippet_id < 2000000;"):
+                                                   "and jupyter_code_snippet_id > {} "
+                                                   "and jupyter_code_snippet_id < {};".format(low, high)):
         jupyter_code_snippet_id = jupyter_code_snippet_id[0]
         if jupyter_code_snippet_id in processed_jupyter_id:
             continue
@@ -41,12 +42,13 @@ if __name__ == "__main__":
         for jupyter_id in db.query_by_sql("select distinct id "
                                           "from jupyter_code_snippet "
                                           "where id not in (select jupyter_id from clone_jupyter_snippet_commit) "
+                                          "and id in (select jupyter_code_snippet_id from clone_pair)"
                                           "and jupyter_path like '{}%'".format(owner + "_" + repo_name)):
             project_task.add(jupyter_id[0])
         # clone repo
         try:
             download_path = os.path.join("/media/viewv/Data/jupyter", owner + "_" + repo_name)
-            download_repo(owner, repo_name, download_path, "")
+            download_repo(owner, repo_name, download_path, token)
         except Exception as e:
             print(e)
             continue
@@ -62,8 +64,8 @@ if __name__ == "__main__":
                 sha, author, last_modified, experience = get_matched_commit_from_local(code, download_path, file_path)
                 author = "" if not author else author.name
                 db.insert_clone_jupyter_snippet_commit(sha, author, last_modified, experience,
-                                                       jupyter_code_snippet_id)
-                print(file_path)
+                                                       jupyter_id)
+                print(jupyter_id, file_path)
                 processed_jupyter_id.add(jupyter_id)
             except Exception as e:
                 print(e)
@@ -73,4 +75,3 @@ if __name__ == "__main__":
                 shutil.rmtree(download_path, onerror=handle_remove_read_only)
         except Exception as e:
             print(e)
-            pass
