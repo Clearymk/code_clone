@@ -77,7 +77,7 @@ def remove_empty_folders(path, remove_root=True):
         os.rmdir(path)
 
 
-def download_repo(owner, name, download_path):
+def download_repo(owner, name, download_path, token):
     os.system("git config --global http.https://github.com.proxy http://127.0.0.1:7890")
     os.system("git config --global https.https://github.com.proxy https://127.0.0.1:7890")
     save_name = owner + "_" + name
@@ -93,8 +93,7 @@ def download_repo(owner, name, download_path):
         os.mkdir(save_path)
         # os.system(
         #     "cd " + save_path + "&& git config --global core.protectNTFS false")
-        # TODO new token
-        Repo.clone_from("https://TOKEN@github.com/%s/%s" % (owner, name),
+        Repo.clone_from("https://%s@github.com/%s/%s" % (token, owner, name),
                         save_path)
 
         print("download " + save_name + " finished")

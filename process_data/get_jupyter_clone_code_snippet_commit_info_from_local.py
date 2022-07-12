@@ -1,6 +1,7 @@
 import os.path
 import shutil
-import stat, errno
+import stat
+import errno
 from util.download_jupyter import download_repo
 from util.database import DataBase
 from find_matched_commit import get_matched_commit_from_local
@@ -18,14 +19,14 @@ def handle_remove_read_only(func, path, exc):
 
 if __name__ == "__main__":
     db = DataBase()
-    processed_jupyter_id = {}
+    processed_jupyter_id = set()
 
     for jupyter_code_snippet_id in db.query_by_sql("select distinct jupyter_code_snippet_id "
                                                    "from clone_pair "
                                                    "where jupyter_code_snippet_id not in "
                                                    "(select jupyter_id from clone_jupyter_snippet_commit) "
-                                                   "and jupyter_code_snippet_id > 0 "
-                                                   "and jupyter_code_snippet_id < 1000000;"):
+                                                   "and jupyter_code_snippet_id > 1000000 "
+                                                   "and jupyter_code_snippet_id < 2000000;"):
         jupyter_code_snippet_id = jupyter_code_snippet_id[0]
         if jupyter_code_snippet_id in processed_jupyter_id:
             continue
@@ -35,7 +36,8 @@ if __name__ == "__main__":
                                        "from jupyter_code_snippet "
                                        "where id = {};".format(jupyter_code_snippet_id))[0][0]
         # 查找相同项目的code snippet
-        owner, repo_name = jupyter_path.split("\\")[0].split("_")
+        repo_path_info = jupyter_path.split("\\")[0]
+        owner, repo_name = repo_path_info[:repo_path_info.find("_")], repo_path_info[repo_path_info.find("_") + 1:]
         project_task = Queue()
         for jupyter_id in db.query_by_sql("select distinct id "
                                           "from jupyter_code_snippet "
@@ -44,8 +46,8 @@ if __name__ == "__main__":
             project_task.put(jupyter_id[0])
         # clone repo
         try:
-            download_path = os.path.join("E:\\", "test", owner + "_" + repo_name)
-            download_repo(owner, repo_name, download_path)
+            download_path = os.path.join("/media/viewv/Data/jupyter", owner + "_" + repo_name)
+            download_repo(owner, repo_name, download_path, "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")
         except Exception as e:
             print(e)
             continue
@@ -63,6 +65,7 @@ if __name__ == "__main__":
                 db.insert_clone_jupyter_snippet_commit(sha, author, last_modified, experience,
                                                        jupyter_code_snippet_id)
                 print(file_path)
+                processed_jupyter_id.add(jupyter_id)
             except Exception as e:
                 print(e)
         # 删除下载的repo
