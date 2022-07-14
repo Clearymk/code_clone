@@ -181,6 +181,12 @@ class DataBase(object):
         cursor.close()
         self.commit(str(post_id) + " " + so_zip_path)
 
+    def update_by_sql(self, update_sql):
+        cursor = self.mysql.cursor()
+        cursor.execute(update_sql)
+        cursor.close()
+        self.mysql.commit()
+
     def delete_clone_pair_by_jupyter_id(self, jupyter_id):
         delete_sql = "delete from jupyter.clone_pair " \
                      "where jupyter_code_snippet_id = %s"

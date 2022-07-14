@@ -47,3 +47,4 @@ class CodeTrimmer:
 
     def remove_white_spaces(self):
         self.code = re.sub(r"\s+", "", self.code)
+        return self.code
