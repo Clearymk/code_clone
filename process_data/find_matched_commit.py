@@ -78,8 +78,8 @@ def get_matched_commit_from_local(search_code, project, target_file):
         return "", "", "", 0
 
 
-def get_matched_commit(search_code, project, target_file, token):
-    git = Github(token)
+def get_matched_commit(search_code, project, target_file):
+    git = Github("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")
     repo = git.get_repo(project)
 
     commits = list(repo.get_commits())

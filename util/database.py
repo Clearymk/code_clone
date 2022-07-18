@@ -185,7 +185,8 @@ class DataBase(object):
         cursor = self.mysql.cursor()
         cursor.execute(update_sql)
         cursor.close()
-        self.mysql.commit()
+        # self.mysql.commit()
+        self.commit()
 
     def delete_clone_pair_by_jupyter_id(self, jupyter_id):
         delete_sql = "delete from jupyter.clone_pair " \
@@ -232,11 +233,11 @@ class DataBase(object):
         print("delete jupyter by jupyter id = ", jupyter_id)
         self.mysql.commit()
 
-    def commit(self, insert_info):
+    def commit(self, insert_info=""):
         self.count += 1
         # 当count大于阈值时提交
-        if self.count >= 1:
+        if self.count >= 100:
             self.count = 0
             self.mysql.commit()
             print("success commit")
-        print("success info = " + str(insert_info))
+        # print("success info = " + str(insert_info))

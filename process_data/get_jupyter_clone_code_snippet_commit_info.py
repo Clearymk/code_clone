@@ -6,10 +6,7 @@ from find_matched_commit import get_matched_commit
 from util.write_log import write_log
 
 if __name__ == "__main__":
-    os.environ['http_proxy'] = "http://localhost:7890"
-    os.environ['HTTP_PROXY'] = "http://localhost:7890"
-    os.environ['https_proxy'] = "http://localhost:7890"
-    os.environ['HTTPS_PROXY'] = "http://localhost:7890"
+    init_proxy()
 
     db = DataBase()
     # without experience 850779
