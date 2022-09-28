@@ -114,8 +114,15 @@ class DataBase(object):
         cursor.close()
         self.commit(str(so_id) + " " + str(create_date))
 
-    def insert_style_violation_jupyter_type_1_(self, data_tuple):
+    def insert_style_violation_jupyter_type_1(self, data_tuple):
         insert_sql = "INSERT INTO style_violation(jupyter_id, rule, description, count) VALUES (%s, %s, %s, %s)"
+        cursor = self.mysql.cursor()
+        cursor.execute(insert_sql, data_tuple)
+        cursor.close()
+        self.commit()
+
+    def insert_style_violation_so(self, data_tuple):
+        insert_sql = "INSERT INTO style_violation(so_id, rule, description, count) VALUES (%s, %s, %s, %s)"
         cursor = self.mysql.cursor()
         cursor.execute(insert_sql, data_tuple)
         cursor.close()
