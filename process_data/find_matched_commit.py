@@ -127,6 +127,35 @@ def get_matched_commit(search_code, project, target_file):
     return matched_commit.sha, matched_author, matched_commit.last_modified, round(experience, 4)
 
 
+def get_matched_commit_count(sha, project, token):
+    git = Github(token)
+    repo = git.get_repo(project)
+
+    commits = list(repo.get_commits())
+    commit_count = 0
+    commits.reverse()
+    authors = dict()
+
+    if len(commits) == 1:
+        return 1
+    else:
+        authors_count = set()
+        for i in range(0, len(commits)):
+            commit_count += 1
+            author = commits[i].author
+            if author in authors:
+                authors[author] += 1
+            else:
+                authors[author] = 1
+
+            authors_count.add(author)
+            if sha == commits[i].sha:
+                experience = authors[author] / commit_count
+                return commit_count, experience, len(authors_count)
+
+    return -1, -1
+
+
 if __name__ == "__main__":
     init_proxy()
     repo_path = "davetang/learning_python"
@@ -144,5 +173,5 @@ print(num)
 
 num.reverse()
 print(num)'''
-    info = get_matched_commit(search_code, repo_path, file_path)
+    info = get_matched_commit_count(search_code, repo_path, file_path)
     print(info)
