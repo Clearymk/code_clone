@@ -114,6 +114,20 @@ class DataBase(object):
         cursor.close()
         self.commit(str(so_id) + " " + str(create_date))
 
+    def insert_style_violation_jupyter_type_1_(self, data_tuple):
+        insert_sql = "INSERT INTO style_violation(jupyter_id, rule, description, count) VALUES (%s, %s, %s, %s)"
+        cursor = self.mysql.cursor()
+        cursor.execute(insert_sql, data_tuple)
+        cursor.close()
+        self.commit()
+
+    def insert_by_sql(self, insert_sql):
+        cursor = self.mysql.cursor()
+        print(insert_sql)
+        cursor.execute(insert_sql)
+        cursor.close()
+        self.commit()
+
     def query_so_id_from_so_group_by_post_id(self):
         query_sql = "select so_post_id " \
                     "from so_code_snippet " \
