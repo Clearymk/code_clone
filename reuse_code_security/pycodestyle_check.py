@@ -51,7 +51,7 @@ def detect_jupyter_code_style():
                 count = match.group("count")
                 rule = match.group("rule")
                 description = match.group("description")
-                db.insert_style_violation_so((jupyter_code_snippet_id, rule, description, count))
+                db.insert_style_violation_jupyter((jupyter_code_snippet_id, rule, description, count))
         os.remove("{}.py".format(jupyter_code_snippet_id))
         print("------------------")
     db.mysql.commit()
@@ -86,5 +86,5 @@ def detect_so_code_style():
 
 
 if __name__ == "__main__":
-    # detect_jupyter_code_style()
-    detect_so_code_style()
+    detect_jupyter_code_style()
+    # detect_so_code_style()
