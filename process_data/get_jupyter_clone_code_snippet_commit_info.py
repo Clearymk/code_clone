@@ -12,7 +12,7 @@ if __name__ == "__main__":
     # without experience 850779
     for jupyter_code_snippet_id in db.query_by_sql("select distinct jupyter_code_snippet_id "
                                                    "from clone_pair "
-                                                   "where jupyter_code_snippet_id > 850779 "
+                                                   "where jupyter_code_snippet_id > 1 "
                                                    "order by jupyter_code_snippet_id;"):
         jupyter_code_snippet_id = jupyter_code_snippet_id[0]
         code, jupyter_path = db.query_by_sql("select code, jupyter_path "
@@ -25,7 +25,7 @@ if __name__ == "__main__":
         file_path = file_path.replace("\\", "/")
 
         try:
-            sha, author, last_modified, experience = get_matched_commit(code, repo, file_path, token)
+            sha, author, last_modified, experience = get_matched_commit(code, repo, file_path)
             author = "" if not author else author.url
             db.insert_clone_jupyter_snippet_commit(sha, author, last_modified, experience,
                                                    jupyter_code_snippet_id)

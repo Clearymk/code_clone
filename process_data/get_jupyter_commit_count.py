@@ -20,7 +20,7 @@ if __name__ == "__main__":
 
             repo = repo.replace("\\", "/")
             commits_count, experience, authors_count = get_matched_commit_count(sha, repo,
-                                                                                "")
+                                                                                "TOKEN")
 
             if commits_count == -1 and authors_count == -1:
                 continue
