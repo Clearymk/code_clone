@@ -31,15 +31,10 @@ def init_driver():
 
 if __name__ == "__main__":
     clone_db = DataBase()
-    driver = init_driver()
+    # driver = init_driver()
     so_db = DataBase("apks")
 
-    for so_code_snippet_id in clone_db.query_by_sql("select distinct so_code_snippet_id "
-                                                    "from clone_pair "
-                                                    "where so_code_snippet_id not in "
-                                                    "(select so_id from clone_so_snippet_info) "
-                                                    "and so_code_snippet_id > 1500000 "
-                                                    "and so_code_snippet_id < 2000000"):
+    for so_code_snippet_id in clone_db.query_by_sql("select so_id from clone_so_snippet_info where type = 0"):
         so_code_snippet_id = so_code_snippet_id[0]
         code, so_post_id = clone_db.query_by_sql("select code, so_post_id "
                                                  "from so_code_snippet "
@@ -64,17 +59,22 @@ if __name__ == "__main__":
                         target_id = answer_id
                 else:
                     break
-
         if target_id:
-            try:
-                create_date = get_code_create_date(driver, target_id, CodeTrimmer(code).remove_white_spaces())
-                if is_question:
-                    vote, is_accept = get_matched_post_info(driver, target_id)
-                else:
-                    vote, is_accept = get_matched_post_info(driver, question_id, target_id)
-
-                clone_db.insert_clone_so_snippet_info(vote, create_date, so_code_snippet_id, is_accept)
-            except Exception as e:
-                print(e)
-                write_log(so_code_snippet_id, "so_log.txt")
-    driver.quit()
+            if is_question:
+                clone_db.update_by_sql("update clone_so_snippet_info set type = 1 where so_id = {}".format(so_code_snippet_id))
+            else:
+                clone_db.update_by_sql("update clone_so_snippet_info set type = 2 where so_id = {}".format(so_code_snippet_id))
+        # if target_id:
+        #     try:
+        #         create_date = get_code_create_date(driver, target_id, CodeTrimmer(code).remove_white_spaces())
+        #         if is_question:
+        #             vote, is_accept = get_matched_post_info(driver, target_id)
+        #         else:
+        #             vote, is_accept = get_matched_post_info(driver, question_id, target_id)
+        #
+        #         clone_db.insert_clone_so_snippet_info(vote, create_date, so_code_snippet_id, is_accept)
+        #     except Exception as e:
+        #         print(e)
+        #         write_log(so_code_snippet_id, "so_log.txt")
+    clone_db.commit()
+    # driver.quit()

@@ -6,7 +6,7 @@ class DataBase(object):
     def __init__(self, database="jupyter") -> None:
         self.count = 0
         try:
-            self.mysql = pymysql.connect(host='10.19.126.71',
+            self.mysql = pymysql.connect(host='10.19.126.78',
                                          port=3307,
                                          user='root',
                                          password='catlab1a509',
@@ -183,10 +183,11 @@ class DataBase(object):
 
     def update_by_sql(self, update_sql):
         cursor = self.mysql.cursor()
+        print(update_sql)
         cursor.execute(update_sql)
         cursor.close()
-        # self.mysql.commit()
-        self.commit()
+        self.mysql.commit()
+        # self.commit()
 
     def delete_clone_pair_by_jupyter_id(self, jupyter_id):
         delete_sql = "delete from jupyter.clone_pair " \
