@@ -36,7 +36,7 @@ def detect_jupyter_code_style():
                                                          "(select jupyter_code_snippet_id "
                                                          "from jupyter.clone_pair "
                                                          "where direction = 1 and clone_type = 1)"):
-        if check_so_code_snippet_exist(jupyter_code_snippet_id):
+        if check_jupyter_code_snippet_exist(jupyter_code_snippet_id):
             continue
         style = pycodestyle.StyleGuide()
 
