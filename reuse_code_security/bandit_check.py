@@ -59,20 +59,20 @@ def detect_jupyter_code_bandit():
             f.writelines(code)
 
         # 第三步运行bandit得到输出
-        os.system("bandit -r bandit_check/ -f json -o bandit_check/result.json")
+        os.system("bandit -r bandit_check/ -q -f json -o bandit_check/result.json")
 
         # 第四步解析输出
         result_json = open("bandit_check/result.json")
         result_json = json.load(result_json)
 
         for result in result_json['results']:
-            print("found issue!")
             violation_code = result['code']
             severity = level_mapping(result['issue_severity'])
             confidence = level_mapping(result['issue_confidence'])
             cwe_link = result['issue_cwe']['link']
             issue_text = result['issue_text']
             violation_id = result['test_id']
+            print("found issue!", issue_text)
             db.insert_bandit_violation_jupyter((jupyter_code_snippet_id, violation_code, severity,
                                                 confidence, issue_text, cwe_link, violation_id))
         # 第五步删除文件
@@ -98,20 +98,20 @@ def detect_so_code_bandit():
             f.writelines(code)
 
         # 第三步运行bandit得到输出
-        os.system("bandit -r bandit_check/ -f json -o bandit_check/result.json")
+        os.system("bandit -r bandit_check/ -q -f json -o bandit_check/result.json")
 
         # 第四步解析输出
         result_json = open("bandit_check/result.json")
         result_json = json.load(result_json)
 
         for result in result_json['results']:
-            print("found issue!")
             violation_code = result['code']
             severity = level_mapping(result['issue_severity'])
             confidence = level_mapping(result['issue_confidence'])
             cwe_link = result['issue_cwe']['link']
             issue_text = result['issue_text']
             violation_id = result['test_id']
+            print("found issue!", issue_text)
             db.insert_bandit_violation_jupyter((so_code_snippet_id, violation_code, severity,
                                                 confidence, issue_text, cwe_link, violation_id))
         # 第五步删除文件
