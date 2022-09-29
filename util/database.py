@@ -128,6 +128,24 @@ class DataBase(object):
         cursor.close()
         self.commit()
 
+    def insert_bandit_violation_jupyter(self, data_tuple):
+        insert_sql = "INSERT INTO bandit_violation(jupyter_id, violation_code, severity, " \
+                     "confidence, issue_text, cwe_link, violation_id) " \
+                     "VALUES (%s, %s, %s, %s, %s, %s, %s)"
+        cursor = self.mysql.cursor()
+        cursor.execute(insert_sql, data_tuple)
+        cursor.close()
+        self.commit()
+
+    def insert_bandit_violation_so(self, data_tuple):
+        insert_sql = "INSERT INTO bandit_violation(so_id, violation_code, severity, " \
+                     "confidence, issue_text, cwe_link, violation_id) " \
+                     "VALUES (%s, %s, %s, %s, %s, %s, %s)"
+        cursor = self.mysql.cursor()
+        cursor.execute(insert_sql, data_tuple)
+        cursor.close()
+        self.commit()
+
     def insert_by_sql(self, insert_sql):
         cursor = self.mysql.cursor()
         print(insert_sql)
