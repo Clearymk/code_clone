@@ -50,7 +50,7 @@ def detect_jupyter_code_bandit():
                                                          "where id in "
                                                          "(select jupyter_code_snippet_id "
                                                          "from jupyter.clone_pair "
-                                                         "where direction = 1 and clone_type = 1)"):
+                                                         "where direction = 1 and clone_type = 2)"):
 
         if check_jupyter_code_snippet_exist(jupyter_code_snippet_id):
             continue
@@ -112,8 +112,8 @@ def detect_so_code_bandit():
             issue_text = result['issue_text']
             violation_id = result['test_id']
             print("found issue!", issue_text)
-            db.insert_bandit_violation_jupyter((so_code_snippet_id, violation_code, severity,
-                                                confidence, issue_text, cwe_link, violation_id))
+            db.insert_bandit_violation_so((so_code_snippet_id, violation_code, severity,
+                                           confidence, issue_text, cwe_link, violation_id))
         # 第五步删除文件
         shutil.rmtree("bandit_check")
         os.mkdir("bandit_check")
@@ -123,4 +123,4 @@ def detect_so_code_bandit():
 
 if __name__ == "__main__":
     detect_jupyter_code_bandit()
-    # detect_so_code_bandit()
+    detect_so_code_bandit()
