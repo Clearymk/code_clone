@@ -137,23 +137,31 @@ def get_matched_commit_count(sha, project, token):
     authors = dict()
 
     if len(commits) == 1:
-        return 1
+        return 1, 1, 1
     else:
         authors_count = set()
         for i in range(0, len(commits)):
             commit_count += 1
-            author = commits[i].author
-            if author in authors:
-                authors[author] += 1
-            else:
-                authors[author] = 1
+            try:
+                author = commits[i].author
+                if author in authors:
+                    authors[author] += 1
+                else:
+                    authors[author] = 1
+            except Exception as e:
+                print(e)
+                author = 'Missing'
+                if author in authors.keys():
+                    authors[author] += 1
+                else:
+                    authors[author] = 1
 
             authors_count.add(author)
             if sha == commits[i].sha:
                 experience = authors[author] / commit_count
                 return commit_count, experience, len(authors_count)
 
-    return -1, -1
+    return -1, -1, -1
 
 
 if __name__ == "__main__":
