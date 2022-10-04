@@ -155,6 +155,22 @@ class DataBase(object):
         cursor.close()
         self.commit()
 
+    def insert_performance_violation(self, data_tuple):
+        insert_sql = "INSERT INTO performance_violation(so_id, jupyter_id, type, message_id, message, symbol) " \
+                     "VALUES (%s, %s, %s, %s, %s, %s)"
+        cursor = self.mysql.cursor()
+        cursor.execute(insert_sql, data_tuple)
+        cursor.close()
+        self.mysql.commit()
+
+    def insert_irrelevant_violation(self, data_tuple):
+        insert_sql = "INSERT INTO irrelevant_violation(so_id, jupyter_id, type, message_id, message, symbol) " \
+                     "VALUES (%s, %s, %s, %s, %s, %s)"
+        cursor = self.mysql.cursor()
+        cursor.execute(insert_sql, data_tuple)
+        cursor.close()
+        self.mysql.commit()
+
     def insert_bandit_violation_so(self, data_tuple):
         insert_sql = "INSERT INTO bandit_violation(so_id, violation_code, severity, " \
                      "confidence, issue_text, cwe_link, violation_id) " \
@@ -289,6 +305,15 @@ class DataBase(object):
         cursor.execute(delete_sql, (jupyter_id,))
         cursor.close()
         print("delete jupyter by jupyter id = ", jupyter_id)
+        self.mysql.commit()
+
+    def delete_pylint_violation_by_id(self, violation_id):
+        delete_sql = "delete from pylint_violation " \
+                     "where id = %s"
+        cursor = self.mysql.cursor()
+        cursor.execute(delete_sql, (violation_id,))
+        cursor.close()
+        print("delete jupyter by jupyter id = ", violation_id)
         self.mysql.commit()
 
     def commit(self, insert_info=""):
